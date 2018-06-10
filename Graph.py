@@ -77,6 +77,11 @@ class Graph:
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text="Your score is " + str(score),
                                 font=("Times", 70))
 
+    def draw_countdown(self, seconds):
+        self.canvas.delete("countdown")
+        self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text=str(seconds),
+                                font=("Times", 80), tags="countdown")
+
     def add_function(self, func, func_start, func_end, interval):
         self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,

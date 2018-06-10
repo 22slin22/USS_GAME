@@ -29,6 +29,7 @@ class Game:
 
     start_up_time = 3
     waiting_time = 0.005
+    show_countdown = True
 
     # stores every single point measured
     uss = []
@@ -49,22 +50,16 @@ class Game:
     def run(self):
         while True:
             while self.running:
-                '''while time.monotonic() < self.start_time:
-                    y = self.srf.distance()
-                    if len(self.uss) == 0 or math.fabs(y - self.uss[-1][1]) < self.spike_filtering:
-                        self.graph.draw_start_point(y)
-                        self.uss.append([0, y])
-                    else:
-                        print("Not taking point")
-                    time.sleep(self.waiting_time)
-
-                print("now running")
-                '''
                 while time.monotonic() - self.start_time < self.total_time:
-
                     if self.velocity is False:
                         y = self.srf.distance()
                         self.filter_point(y)
+
+                        if time.monotonic() > self.start_time:
+                            self.show_countdown = False
+                            self.graph.canvas.delete("countdown")
+                        if self.show_countdown:
+                            self.graph.draw_countdown(math.ceil(self.start_time - time.monotonic()))
 
                     '''
                     else:
@@ -131,13 +126,15 @@ class Game:
         self.uss.clear()
         self.points.clear()
         self.running = True
+        self.show_countdown = True
 
     def calculate_loss(self):
         loss = 0
 
-        for point in self.uss:
-            y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
-            loss += math.fabs(y_ - point[1])
+        for point in self.points:
+            if point[0] > 0:
+                y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
+                loss += math.fabs(y_ - point[1])
 
         loss = loss / len(self.uss)
         return loss
