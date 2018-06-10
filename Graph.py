@@ -81,31 +81,3 @@ class Graph:
         self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
-
-    def restart(self, event):
-        clear_points()
-
-        self.canvas.delete("all")
-
-        draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end,
-                  self.game.y_min, self.game.y_max)
-        draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
-                   self.game.total_time, self.game.y_max, self.game.y_min)
-
-        self.game.restart()
-
-    def toggle_geom(self, event):
-        geom = self.tk.winfo_geometry()
-        self.tk.geometry(self._geom)
-        self._geom = geom
-        self.tk.overrideredirect(False)
-
-    def draw_score(self, score):
-        self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text="Your score is " + str(score),
-                                font=("Times", 70))
-
-    def add_function(self, func, func_start, func_end, interval):
-        self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
-        draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
-                   self.game.total_time, self.game.y_max, self.game.y_min)
-

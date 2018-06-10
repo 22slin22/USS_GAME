@@ -20,12 +20,19 @@ class Game:
     y_max = 300
     y_min = 0
 
-    spike_filtering = 500000
+    # if new point is spike_delta_y away from last point, it wont be drawn
+    spike_delta_y = 25
+    # number of successive nearby points, after witch they are drawn even if they were not drawn in the first place
+    spike_override = 4
+    # number of points, that have not been drawn since the last drawn one
+    points_not_drawn = 0
 
     start_up_time = 3
     waiting_time = 0.005
 
+    # stores every single point measured
     uss = []
+    # stores only points that are drawn
     points = []
 
     running = True
@@ -42,7 +49,7 @@ class Game:
     def run(self):
         while True:
             while self.running:
-                while time.monotonic() < self.start_time:
+                '''while time.monotonic() < self.start_time:
                     y = self.srf.distance()
                     if len(self.uss) == 0 or math.fabs(y - self.uss[-1][1]) < self.spike_filtering:
                         self.graph.draw_start_point(y)
@@ -52,22 +59,12 @@ class Game:
                     time.sleep(self.waiting_time)
 
                 print("now running")
-
+                '''
                 while time.monotonic() - self.start_time < self.total_time:
-                    x = time.monotonic() - self.start_time
 
                     if self.velocity is False:
                         y = self.srf.distance()
-                        while y < 5:
-                            y = self.srf.distance()
-                            time.sleep(0.04)
-                        print(y)
-                        if len(self.uss) == 0 or math.fabs(y - self.uss[-1][1]) < self.spike_filtering:
-                            self.graph.new_point([x, y])
-                            self.uss.append([x, y])
-                            self.points.append([x, y])
-                        else:
-                            print("Not taking point")
+                        self.filter_point(y)
 
                     '''
                     else:
@@ -91,6 +88,43 @@ class Game:
 
             self.graph.update()
             time.sleep(0.2)
+
+    def filter_point(self, new_y):
+        while new_y < 5 or new_y > self.y_max:
+            new_y = self.srf.distance()
+            time.sleep(0.04)
+        new_x = time.monotonic() - self.start_time
+
+        if len(self.points) == 0 \
+                or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
+            self.graph.new_point([new_x, new_y])
+            self.points.append([new_x, new_y])
+            self.points_not_drawn = 0
+        else:
+            if self.check_override(new_y):
+                for i in range(self.points_not_drawn):
+                    x = self.uss[-(self.points_not_drawn-i)][0]
+                    y = self.uss[-(self.points_not_drawn-i)][1]
+                    self.graph.new_point([x, y])
+                    self.points.append([x, y])
+                self.graph.new_point([new_x, new_y])
+                self.points.append([new_x, new_y])
+                self.points_not_drawn = 0
+            else:
+                self.points_not_drawn += 1
+
+        self.uss.append([new_x, new_y])
+
+    # return True if the the last spike_override points should be added because they all lay on one "line"
+    def check_override(self, new_y):
+        if self.points_not_drawn >= self.spike_override:
+            if not (math.fabs(new_y - self.uss[-1][1]) < self.spike_delta_y):
+                return False
+            for i in range(self.spike_override - 1):
+                if not (math.fabs(self.uss[-i-1][1] - self.uss[-i-2][1]) < self.spike_delta_y):
+                    return False
+            return True
+        return False
 
     def restart(self):
         self.start_time = time.monotonic() + self.start_up_time
