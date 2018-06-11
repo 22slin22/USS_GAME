@@ -8,6 +8,10 @@ class Game:
     velocity = False
     velocity_average = 5
 
+    func = "exp"
+    func_start = 0
+    func_end = 5.4
+
     # func = "log"
     # func_start = 1
     # func_end = 70
@@ -56,9 +60,9 @@ class Game:
 
         self.run()
 
-        self.func = None
-        self.func_start = None
-        self.func_end = None
+        # self.func = None
+        # self.func_start = None
+        # self.func_end = None
 
     def run(self):
         while True:
@@ -153,15 +157,8 @@ class Game:
         loss = loss / len(self.uss)
         return loss
 
-    def set_func(self, func):
+    def start(self, func, func_start, func_end):
         self.func = func
-
-    def set_func_start(self, func_start):
         self.func_start = func_start
-
-    def set_func_end(self, func_end):
         self.func_end = func_end
-
-
-if __name__ == "__main__":
-    Game()
+        self.restart()
