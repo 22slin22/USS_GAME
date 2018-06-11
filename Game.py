@@ -17,6 +17,7 @@ class Game:
     # func_end = 13
 
     # func = "cos"
+    # func = "sin"
     # func_start = 0
     # func_end = 12.6
 
