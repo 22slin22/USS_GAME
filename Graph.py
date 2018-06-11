@@ -18,7 +18,7 @@ class Graph:
         self.tk.geometry("{0}x{1}+0+0".format(self.tk.winfo_screenwidth()-self.pad, self.tk.winfo_screenheight()-self.pad))
         self.tk.bind('<Escape>', self.toggle_geom)
         self.tk.bind("<space>", self.restart)
-        # self.tk.overrideredirect(True)
+        #   self.tk.overrideredirect(True)
 
         self.canvas_width = self.tk.winfo_screenwidth()-self.pad
         self.canvas_height = self.tk.winfo_screenheight()-self.pad
