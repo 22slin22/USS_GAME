@@ -53,12 +53,11 @@ class Game:
 
     def __init__(self):
         self.graph = Graph(self)
-        self.graph.add_function(self.func, self.func_start, self.func_end, self.interval)
         self.srf = SRF02()
 
-        self.start_time = time.monotonic() + self.start_up_time
+        # self.start_time = time.monotonic() + self.start_up_time
 
-        self.run()
+        # self.run()
 
         # self.func = None
         # self.func_start = None
@@ -161,4 +160,6 @@ class Game:
         self.func = func
         self.func_start = func_start
         self.func_end = func_end
+        self.graph.add_function(self.func, self.func_start, self.func_end, self.interval)
         self.restart()
+        self.run()
