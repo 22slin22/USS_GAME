@@ -8,12 +8,20 @@ class Game:
     velocity = False
     velocity_average = 5
 
-    func = "sin"
-    func_start = 0
-    func_end = 6.3
-    interval = 0.05
+    # func = "log"
+    # func_start = 1
+    # func_end = 70
 
-    total_time = 10
+    # func = "quad"
+    # func_start = -13
+    # func_end = 13
+
+    # func = "cos"
+    # func_start = 0
+    # func_end = 12.6
+
+    interval = 0.05
+    total_time = 20
     # y_max = 10
     # y_min = -10
 
@@ -46,6 +54,10 @@ class Game:
         self.start_time = time.monotonic() + self.start_up_time
 
         self.run()
+
+        self.func = None
+        self.func_start = None
+        self.func_end = None
 
     def run(self):
         while True:
@@ -133,11 +145,21 @@ class Game:
 
         for point in self.points:
             if point[0] > 0:
+                print(point[0])
                 y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
                 loss += math.fabs(y_ - point[1])
 
         loss = loss / len(self.uss)
         return loss
+
+    def set_func(self, func):
+        self.func = func
+
+    def set_func_start(self, func_start):
+        self.func_start = func_start
+
+    def set_func_end(self, func_end):
+        self.func_end = func_end
 
 
 if __name__ == "__main__":

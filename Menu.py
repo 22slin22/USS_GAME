@@ -31,6 +31,7 @@ class Menu(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -43,6 +44,7 @@ class StartPage(tk.Frame):
         button2 = tk.Button(self, text="About", command=lambda: controller.show_frame("About"))
         button1.pack()
         button2.pack()
+
 
 class Levels(tk.Frame):
 
