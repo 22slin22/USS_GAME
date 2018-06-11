@@ -18,11 +18,16 @@ class Menu(tk.Tk):
         container.pack(side="top", fill="both", expand=True)
 
         self.frames = {}
-        for F in (StartPage, Levels, About):
+        for F in (StartPage, About):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
+
+        page_name = Levels.__name__
+        frame = Levels(parent=container, controller=self, game=self.game)
+        self.frames[page_name] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("StartPage")
 
@@ -48,7 +53,7 @@ class StartPage(tk.Frame):
 
 class Levels(tk.Frame):
 
-    def __init__(self, game, parent, controller):
+    def __init__(self, parent, controller, game):
         self.game = game
         tk.Frame.__init__(self, parent)
         self.controller = controller
