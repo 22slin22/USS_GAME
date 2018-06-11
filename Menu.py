@@ -56,11 +56,24 @@ class Levels(tk.Frame):
 
         # SPACE FOR LEVELS
 
-        # GO BACK TO START BUTTON
+        # Sinus
+        self.imgSin = tk.PhotoImage(file="WIP.png")
+        ButtSin = tk.Button(self, image=self.imgSin).pack()
+        # Cosinus
+        self.imgCos = tk.PhotoImage(file="WIP.png")
+        ButtCos = tk.Button(self, image=self.imgSin).pack()
 
+        # Logarythm
+        self.imgLog = tk.PhotoImage(file="WIP.png")
+        ButtLog = tk.Button(self, image=self.imgSin).pack()
+
+        # Quadratic
+        self.imgQuad = tk.PhotoImage(file="WIP.png")
+        ButtQuad = tk.Button(self, image=self.imgSin).pack()
+
+        # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
-        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("StartPage"))
-        button0.pack()
+        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("StartPage")).pack()
 
 
 class About(tk.Frame):
