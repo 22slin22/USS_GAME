@@ -56,6 +56,10 @@ class Graph:
         self.tk.update()
 
     def restart(self, event):
+        self.reset()
+        self.game.restart()
+
+    def reset(self):
         clear_points()
 
         self.canvas.delete("all")
@@ -64,8 +68,6 @@ class Graph:
                   self.game.y_min, self.game.y_max)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
-
-        self.game.restart()
 
     def toggle_geom(self, event):
         geom = self.tk.winfo_geometry()

@@ -8,9 +8,9 @@ class Game:
     velocity = False
     velocity_average = 5
 
-    func = "exp"
-    func_start = 0
-    func_end = 5.4
+    # func = "exp"
+    # func_start = 0
+    # func_end = 5.4
 
     # func = "log"
     # func_start = 1
@@ -56,12 +56,11 @@ class Game:
         self.srf = SRF02()
 
         # self.start_time = time.monotonic() + self.start_up_time
-
         # self.run()
 
-        # self.func = None
-        # self.func_start = None
-        # self.func_end = None
+        self.func = None
+        self.func_start = None
+        self.func_end = None
 
     def run(self):
         while True:
@@ -162,4 +161,5 @@ class Game:
         self.func_end = func_end
         self.graph.add_function(self.func, self.func_start, self.func_end, self.interval)
         self.restart()
+        self.graph.reset()
         self.run()

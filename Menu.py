@@ -64,23 +64,24 @@ class Levels(tk.Frame):
 
         # Sinus
         self.imgSin = tk.PhotoImage(file="WIP.png")
-        buttSin = tk.Button(self, image=self.imgSin, command=self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
+        buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
+        # buttSin = tk.Button(self, image=self.imgSin, command=self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
 
         # Cosinus
         self.imgCos = tk.PhotoImage(file="WIP.png")
-        buttCos = tk.Button(self, image=self.imgSin).grid(row=1, column=1)
+        buttCos = tk.Button(self, image=self.imgCos, command=lambda: self.game.start("cos", 0, 12.6)).grid(row=1, column=1)
 
         # Logarythm
         self.imgLog = tk.PhotoImage(file="WIP.png")
-        buttLog = tk.Button(self, image=self.imgSin).grid(row=1, column=2)
+        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log", 1, 70)).grid(row=1, column=2)
 
         # Quadratic
         self.imgQuad = tk.PhotoImage(file="WIP.png")
-        buttQuad = tk.Button(self, image=self.imgSin).grid(row=1, column=3)
+        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad", -13, 13)).grid(row=1, column=3)
 
         # Exp
-        self.imgQuad = tk.PhotoImage(file="WIP.png")
-        buttQuad = tk.Button(self, image=self.imgSin).grid(row=1, column=4)
+        self.imgExp = tk.PhotoImage(file="WIP.png")
+        buttQuad = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=1, column=4)
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
