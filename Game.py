@@ -3,10 +3,14 @@ from Functions import *
 from srf import SRF02
 import time
 
+DISTANCE = 0
+VELOCITY = 1
+
 
 class Game:
-    velocity = False
-    velocity_average = 5
+    mode = 1
+    # number of data points that are average to the velocity
+    velocity_average = 4
 
     # func = "exp"
     # func_start = 0
@@ -27,11 +31,12 @@ class Game:
 
     interval = 0.05
     total_time = 20
-    # y_max = 10
-    # y_min = -10
 
-    y_max = 300
-    y_min = 0
+    # y_max = 300
+    # y_min = 0
+
+    y_max = 500
+    y_min = -500
 
     # if new point is spike_delta_y away from last point, it wont be drawn
     spike_delta_y = 25
@@ -66,27 +71,47 @@ class Game:
         while True:
             while self.running:
                 while time.monotonic() - self.start_time < self.total_time:
-                    if self.velocity is False:
+                    if self.mode == DISTANCE:
                         y = self.srf.distance()
-                        self.filter_point(y)
+                        x = time.monotonic() - self.start_time
+                        if self.filter_point(y):
+                            self.graph.new_point([x, y])
+                            self.points.append([x, y])
+                            self.points_not_drawn = 0
+                        elif self.check_override(y):
+                            self.add_points_not_drawn()
+                            self.graph.new_point([x, y])
+                            self.points.append([x, y])
+                        else:
+                            self.points_not_drawn += 1
+                        self.uss.append([x, y])
 
-                        if time.monotonic() > self.start_time:
-                            self.show_countdown = False
-                            self.graph.canvas.delete("countdown")
-                        if self.show_countdown:
-                            self.graph.draw_countdown(math.ceil(self.start_time - time.monotonic()))
+                        self.countdown()
 
-                    '''
-                    else:
-                        dis, y = get_velocity(self.uss, self.velocity_average)
-                        print(y)
+                    elif self.mode == VELOCITY:
+                        y = self.srf.distance()
+                        x = time.monotonic() - self.start_time
+                        if self.filter_point(y):
+                            self.points.append([x, y])
+                            self.points_not_drawn = 0
+                            if len(self.points) > self.velocity_average:
+                                v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
+                                self.graph.new_point([x, v])
+                                print(v)
 
-                        if len(self.uss) == 0 or math.fabs(dis - self.uss[-1][1]) < self.spike_filtering:
-                            self.uss.append([x, dis])
-                            if y is not None:
-                                self.graph.new_point([x, y])
-                                self.points.append([x, y])
-                    '''
+                        elif self.check_override(y):
+                            self.add_points_not_drawn()
+                            self.points.append([x, y])
+                            if len(self.points) > self.velocity_average:
+                                v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
+                                self.graph.new_point([x, v])
+                                print(v)
+
+                        else:
+                            self.points_not_drawn += 1
+                        self.uss.append([x, y])
+
+                        self.countdown()
 
                     time.sleep(self.waiting_time)
 
@@ -103,33 +128,27 @@ class Game:
         while new_y < 5 or new_y > self.y_max:
             new_y = self.srf.distance()
             time.sleep(0.04)
-        new_x = time.monotonic() - self.start_time
 
-        if len(self.points) == 0 \
-                or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
-            self.graph.new_point([new_x, new_y])
-            self.points.append([new_x, new_y])
-            self.points_not_drawn = 0
-        else:
-            if self.check_override(new_y):
-                for i in range(self.points_not_drawn):
-                    x = self.uss[-(self.points_not_drawn-i)][0]
-                    y = self.uss[-(self.points_not_drawn-i)][1]
-                    self.graph.new_point([x, y])
-                    self.points.append([x, y])
-                self.graph.new_point([new_x, new_y])
-                self.points.append([new_x, new_y])
-                self.points_not_drawn = 0
-            else:
-                self.points_not_drawn += 1
+        # tests if the point is not to far from the last point
+        if len(self.points) == 0 or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
+            return True
 
-        self.uss.append([new_x, new_y])
+    # adds the last points that were not drawn
+    def add_points_not_drawn(self):
+        for i in range(self.spike_override-1):          # -1 because the new point has not been added yet
+            x = self.uss[-(self.spike_override-1-i)][0]
+            y = self.uss[-(self.spike_override-1-i)][1]
+            self.graph.new_point([x, y])
+            self.points.append([x, y])
+        self.points_not_drawn = 0
 
     # return True if the the last spike_override points should be added because they all lay on one "line"
     def check_override(self, new_y):
         if self.points_not_drawn >= self.spike_override:
+            # tests if the newest point lays on the new line
             if not (math.fabs(new_y - self.uss[-1][1]) < self.spike_delta_y):
                 return False
+            # tests if the last points all lay on one line
             for i in range(self.spike_override - 1):
                 if not (math.fabs(self.uss[-i-1][1] - self.uss[-i-2][1]) < self.spike_delta_y):
                     return False
@@ -148,7 +167,6 @@ class Game:
 
         for point in self.points:
             if point[0] > 0:
-                print(point[0])
                 y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
                 loss += math.fabs(y_ - point[1])
 
@@ -163,3 +181,13 @@ class Game:
         self.restart()
         self.graph.reset()
         self.run()
+
+    def countdown(self):
+        if time.monotonic() > self.start_time and self.show_countdown:
+            self.show_countdown = False
+            self.graph.canvas.delete("countdown")
+        if self.show_countdown:
+            self.graph.draw_countdown(math.ceil(self.start_time - time.monotonic()))
+
+    def set_mode(self, mode):
+        self.mode = mode
