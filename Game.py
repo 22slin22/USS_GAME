@@ -8,7 +8,7 @@ VELOCITY = 1
 
 
 class Game:
-    mode = 1
+    mode = 0
     # number of data points that are average to the velocity
     velocity_average = 4
 
@@ -32,11 +32,11 @@ class Game:
     interval = 0.05
     total_time = 20
 
-    # y_max = 300
-    # y_min = 0
+    y_max = 300
+    y_min = 0
 
-    y_max = 500
-    y_min = -500
+    # y_max = 500
+    # y_min = -500
 
     # if new point is spike_delta_y away from last point, it wont be drawn
     spike_delta_y = 25
@@ -85,6 +85,8 @@ class Game:
                         else:
                             self.points_not_drawn += 1
                         self.uss.append([x, y])
+
+                        self.start_point()
 
                         self.countdown()
 
@@ -154,6 +156,12 @@ class Game:
                     return False
             return True
         return False
+
+    # when the game hasn't started, draw a start point on the y axis
+    def start_point(self):
+        if time.monotonic() < self.start_time:
+            if len(self.points) > 0:
+                self.graph.draw_start_point(self.points[-1][1])
 
     def restart(self):
         self.start_time = time.monotonic() + self.start_up_time
