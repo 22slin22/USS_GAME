@@ -1,4 +1,6 @@
 from Graph import Graph
+import Menu
+import tkinter as tk
 from Functions import *
 from srf import SRF02
 import time
@@ -57,7 +59,8 @@ class Game:
     running = True
 
     def __init__(self):
-        self.graph = Graph(self)
+
+        # self.graph = Graph(self)
         self.srf = SRF02()
 
         # self.start_time = time.monotonic() + self.start_up_time
@@ -66,6 +69,9 @@ class Game:
         self.func = None
         self.func_start = None
         self.func_end = None
+
+        self.frameManager = Menu.FrameManager(self)
+        self.frameManager.mainloop()
 
     def run(self):
         while True:
@@ -182,6 +188,7 @@ class Game:
         return loss
 
     def start(self, func, func_start, func_end):
+        self.frameManager.show_frame("Graph")
         self.func = func
         self.func_start = func_start
         self.func_end = func_end
@@ -199,3 +206,9 @@ class Game:
 
     def set_mode(self, mode):
         self.mode = mode
+
+    def set_graph(self, graph):
+        self.graph = graph
+
+if __name__ == '__main__':
+    game = Game()

@@ -1,12 +1,18 @@
 import tkinter as tk
 from tkinter import font as tkfont
-from Game import Game
+from Graph import Graph
 
-class Menu(tk.Tk):
 
-    def __init__(self, *args, **kwargs):
+class FrameManager(tk.Tk):
+
+    def __init__(self, game, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.game = Game()
+        #self.pad = 3
+        self._geom = '1000x800+0+0'
+        self.geometry("{0}x{1}+0+0".format(self.winfo_screenwidth(), self.winfo_screenheight()))
+        self.bind('<Escape>', self.toggle_geom)
+
+        self.game = game
 
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
@@ -30,12 +36,26 @@ class Menu(tk.Tk):
         self.frames[page_name] = frame
         frame.grid(row=0, column=0, sticky="nsew")
 
+        page_name = Graph.__name__
+        frame = Graph(parent=container, controller=self, game=self.game)
+        self.frames[page_name] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+
+        self.game.set_graph(self.frames["Graph"])
+
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         frame.tkraise()
+        frame.focus_set()
+
+    def toggle_geom(self, event):
+        geom = self.winfo_geometry()
+        self.geometry(self._geom)
+        self._geom = geom
+        self.overrideredirect(False)
 
 
 class StartPage(tk.Frame):
@@ -47,6 +67,7 @@ class StartPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
+
 
 class Functions(tk.Frame):
 
@@ -98,9 +119,3 @@ class Type(tk.Frame):
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
         button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("Functions"))
         button0.pack()
-
-
-if __name__ == "__main__":
-    app = Menu()
-    app.mainloop()
-

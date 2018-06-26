@@ -1,30 +1,31 @@
 from tkinter import *
 from Axis import *
 from Line import *
+import tkinter as tk
 
 
-class Graph:
+class Graph(tk.Frame):
     graph_x_start = 100
     graph_y_start = 100
 
     graph = None
 
-    def __init__(self, game):
-        self.tk = Tk()
+    def __init__(self, parent, controller, game):
+        tk.Frame.__init__(self, parent, width=1080, height=720)
+        self.controller = controller
+
+        # self.tk = Tk()
         self.game = game
 
-        self.pad = 3
-        self._geom = '1000x800+0+0'
-        self.tk.geometry("{0}x{1}+0+0".format(self.tk.winfo_screenwidth()-self.pad, self.tk.winfo_screenheight()-self.pad))
-        self.tk.bind('<Escape>', self.toggle_geom)
-        self.tk.bind("<space>", self.restart)
         #   self.tk.overrideredirect(True)
 
-        self.canvas_width = self.tk.winfo_screenwidth()-self.pad
-        self.canvas_height = self.tk.winfo_screenheight()-self.pad
+        self.canvas_width = self.winfo_screenwidth()
+        self.canvas_height = self.winfo_screenheight()
 
-        self.canvas = Canvas(self.tk, width=self.canvas_width, height=self.canvas_height)
+        self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
+
+        self.bind("<space>", self.restart)
 
         self.graph_x_end = self.canvas_width - 100
         self.graph_y_end = self.canvas_height - 100
@@ -40,7 +41,7 @@ class Graph:
         y = (new_point[1] - self.game.y_min) * self.pixels_per_cm
         draw_new_point(self.canvas, [x, y], self.graph_x_start, self.graph_y_end)
 
-        self.update()
+        self.refresh()
 
     def draw_start_point(self, y):
         x = self.graph_x_start
@@ -49,11 +50,11 @@ class Graph:
         self.canvas.delete('start_point')
         self.canvas.create_oval(x-5, y-5, x+5, y+5, fill="orange", tags='start_point')
 
-        self.update()
+        self.refresh()
 
-    def update(self):
-        self.tk.update_idletasks()
-        self.tk.update()
+    def refresh(self):
+        self.controller.update_idletasks()
+        self.controller.update()
 
     def restart(self, event):
         self.reset()
@@ -68,12 +69,6 @@ class Graph:
                   self.game.y_min, self.game.y_max)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
-
-    def toggle_geom(self, event):
-        geom = self.tk.winfo_geometry()
-        self.tk.geometry(self._geom)
-        self._geom = geom
-        self.tk.overrideredirect(False)
 
     def draw_score(self, score):
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text="Your score is " + str(score),
