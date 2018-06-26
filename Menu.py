@@ -75,30 +75,29 @@ class Functions(tk.Frame):
         self.game = game
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="Levels", font=controller.title_font)
+        label = tk.Label(self, text="Funktionen Typen", font=controller.title_font)
         label.grid(row=0, column=2)
 
         # SPACE FOR LEVELS
 
         # Sinus
-        self.imgSin = tk.PhotoImage(file="WIP.png")
+        self.imgSin = tk.PhotoImage(file="Sinus.png")
         buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
-
-        # Cosinus
-        self.imgCos = tk.PhotoImage(file="WIP.png")
-        buttCos = tk.Button(self, image=self.imgCos, command=lambda: self.game.start("cos", 0, 12.6)).grid(row=1, column=1)
+        # labelSin = tk.Label(self, text="Trigonometrische").grid(row=2, column=0)
 
         # Logarythm
-        self.imgLog = tk.PhotoImage(file="WIP.png")
-        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log", 1, 70)).grid(row=1, column=2)
+        self.imgLog = tk.PhotoImage(file="Log.png")
+        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log", 1, 70)).grid(row=1, column=1)
+        # labelLog = tk.Label(self, text="Logarythmische").grid(row=2, column=0)
 
         # Quadratic
-        self.imgQuad = tk.PhotoImage(file="WIP.png")
-        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad", -13, 13)).grid(row=1, column=3)
-
+        self.imgQuad = tk.PhotoImage(file="Quad.png")
+        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad", -13, 13)).grid(row=1, column=2)
+        # labelQuad = tk.Label(self, text="Quadratische").grid(row=2, column=0)
         # Exp
-        self.imgExp = tk.PhotoImage(file="WIP.png")
-        buttQuad = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=1, column=4)
+        self.imgExp = tk.PhotoImage(file="Expo.png")
+        buttQuad = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=1, column=3)
+        # labelExp = tk.Label(self, text="Exponential").grid(row=2, column=0)
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
