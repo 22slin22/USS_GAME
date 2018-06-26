@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import font as tkfont
 from Game import Game
 
-
 class Menu(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -16,16 +15,17 @@ class Menu(tk.Tk):
         # will be raised above the others
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
-
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (StartPage, About):
+        for F in (StartPage, Type):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        page_name = Levels.__name__
-        frame = Levels(parent=container, controller=self, game=self.game)
+        page_name = Functions.__name__
+        frame = Functions(parent=container, controller=self, game=self.game)
         self.frames[page_name] = frame
         frame.grid(row=0, column=0, sticky="nsew")
 
@@ -40,18 +40,14 @@ class Menu(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, width= 1080, height=720)
         self.controller = controller
         label = tk.Label(self, text="Ultra Sonic School Game", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Levels", command=lambda: controller.show_frame("Levels"))
-        button2 = tk.Button(self, text="About", command=lambda: controller.show_frame("About"))
-        button1.pack()
-        button2.pack()
+        button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
 
-
-class Levels(tk.Frame):
+class Functions(tk.Frame):
 
     def __init__(self, parent, controller, game):
         self.game = game
@@ -65,7 +61,6 @@ class Levels(tk.Frame):
         # Sinus
         self.imgSin = tk.PhotoImage(file="WIP.png")
         buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
-        # buttSin = tk.Button(self, image=self.imgSin, command=self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
 
         # Cosinus
         self.imgCos = tk.PhotoImage(file="WIP.png")
@@ -85,10 +80,13 @@ class Levels(tk.Frame):
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
-        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
+        button0 = tk.Button(self, text="Go back", image=self.img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
 
 
-class About(tk.Frame):
+        #button1 = tk.Button(self, text="Go to the start page", image=img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
+
+
+class Type(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -96,13 +94,8 @@ class About(tk.Frame):
         label = tk.Label(self, text="About/Help Page", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        # SPACE About
-
-
-        # GO BACK TO START BUTTON
-
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
-        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("StartPage"))
+        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("Functions"))
         button0.pack()
 
 
