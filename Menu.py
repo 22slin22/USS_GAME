@@ -78,8 +78,6 @@ class Functions(tk.Frame):
         label = tk.Label(self, text="Funktionen Typen", font=controller.title_font)
         label.grid(row=0, column=2)
 
-        # SPACE FOR LEVELS
-
         # Sinus
         self.imgSin = tk.PhotoImage(file="Sinus.png")
         buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
