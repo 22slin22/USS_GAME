@@ -84,3 +84,6 @@ class Graph(tk.Frame):
         self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
+
+    def on_button_pressed(self, button_index):
+        print(button_index, "was pressed")

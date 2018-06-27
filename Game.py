@@ -4,6 +4,7 @@ import tkinter as tk
 from Functions import *
 from srf import SRF02
 import time
+from ButtonListener import ButtonListener
 
 DISTANCE = 0
 VELOCITY = 1
@@ -71,6 +72,8 @@ class Game:
         self.func_end = None
 
         self.frameManager = Menu.FrameManager(self)
+        self.button_listener = ButtonListener(self.frameManager)
+
         self.frameManager.mainloop()
 
     def run(self):
@@ -84,15 +87,12 @@ class Game:
                             self.graph.new_point([x, y])
                             self.points.append([x, y])
                             self.points_not_drawn = 0
-                            print("Adding point in line")
                         elif self.check_override(y):
                             self.add_points_not_drawn()
                             self.graph.new_point([x, y])
                             self.points.append([x, y])
-                            print("Overriding")
                         else:
                             self.points_not_drawn += 1
-                            print("Not taking point")
                         self.uss.append([x, y])
 
                         self.start_point()

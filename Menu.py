@@ -5,6 +5,8 @@ from Graph import Graph
 
 class FrameManager(tk.Tk):
 
+    current_frame_name = None
+
     def __init__(self, game, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         #self.pad = 3
@@ -47,6 +49,7 @@ class FrameManager(tk.Tk):
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
+        self.current_frame_name = page_name
         frame = self.frames[page_name]
         frame.tkraise()
         frame.focus_set()
@@ -56,6 +59,9 @@ class FrameManager(tk.Tk):
         self.geometry(self._geom)
         self._geom = geom
         self.overrideredirect(False)
+
+    def on_button_pressed(self, button_index):
+        self.frames[self.current_frame_name].on_button_pressed(button_index)
 
 
 class StartPage(tk.Frame):
@@ -67,6 +73,9 @@ class StartPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
+
+    def on_button_pressed(self, button_index):
+        print(button_index, "was pressed")
 
 
 class Functions(tk.Frame):
@@ -104,6 +113,9 @@ class Functions(tk.Frame):
 
         #button1 = tk.Button(self, text="Go to the start page", image=img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
 
+    def on_button_pressed(self, button_index):
+        print(button_index, "was pressed")
+
 
 class Type(tk.Frame):
 
@@ -116,3 +128,6 @@ class Type(tk.Frame):
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
         button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("Functions"))
         button0.pack()
+
+    def on_button_pressed(self, button_index):
+        print(button_index, "was pressed")
