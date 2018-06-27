@@ -6,6 +6,7 @@ from Graph import Graph
 class FrameManager(tk.Tk):
 
     current_frame_name = None
+    button_listener = None
 
     def __init__(self, game, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -62,6 +63,19 @@ class FrameManager(tk.Tk):
 
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
+
+    def run(self):
+        while True:
+            if not self.button_listener is None:
+                self.button_listener.check_buttons()
+            self.tick()
+
+    def tick(self):
+        self.update_idletasks()
+        self.update()
+
+    def add_button_listener(self, button_listener):
+        self.button_listener = button_listener
 
 
 class StartPage(tk.Frame):

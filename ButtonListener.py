@@ -13,6 +13,7 @@ class ButtonListener:
 
     def __init__(self, frame_manager):
         self.frame_manager = frame_manager
+        self.frame_manager.add_button_listener(self)
         self.frame_manager.bind("<Left>", lambda event, button_index=0: self.button_pressed(button_index))
         self.frame_manager.bind("<Down>", lambda event, button_index=1: self.button_pressed(button_index))
         self.frame_manager.bind("<Right>", lambda event, button_index=2: self.button_pressed(button_index))

@@ -74,7 +74,8 @@ class Game:
         self.frameManager = Menu.FrameManager(self)
         self.button_listener = ButtonListener(self.frameManager)
 
-        self.frameManager.mainloop()
+        # self.frameManager.mainloop()
+        self.frameManager.run()
 
     def run(self):
         while True:
@@ -193,7 +194,7 @@ class Game:
                 y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
                 loss += math.fabs(y_ - point[1])
 
-        loss = loss / len(self.uss)
+        loss = loss / len(self.points)
         return loss
 
     def start(self, func, func_start, func_end):
