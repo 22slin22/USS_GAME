@@ -11,7 +11,7 @@ class Graph(tk.Frame):
     graph = None
 
     def __init__(self, parent, controller, game):
-        tk.Frame.__init__(self, parent, width=1080, height=720)
+        tk.Frame.__init__(self, parent)
         self.controller = controller
 
         # self.tk = Tk()

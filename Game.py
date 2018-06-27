@@ -78,18 +78,21 @@ class Game:
             while self.running:
                 while time.monotonic() - self.start_time < self.total_time:
                     if self.mode == DISTANCE:
-                        y = self.srf.distance()
-                        x = time.monotonic() - self.start_time
+                        x, y = self.get_distance()
+                        
                         if self.filter_point(y):
                             self.graph.new_point([x, y])
                             self.points.append([x, y])
                             self.points_not_drawn = 0
+                            print("Adding point in line")
                         elif self.check_override(y):
                             self.add_points_not_drawn()
                             self.graph.new_point([x, y])
                             self.points.append([x, y])
+                            print("Overriding")
                         else:
                             self.points_not_drawn += 1
+                            print("Not taking point")
                         self.uss.append([x, y])
 
                         self.start_point()
@@ -132,14 +135,20 @@ class Game:
             self.graph.update()
             time.sleep(0.2)
 
-    def filter_point(self, new_y):
-        while new_y < 5 or new_y > self.y_max:
-            new_y = self.srf.distance()
+    def get_distance(self):
+        y = self.srf.distance()
+        while y < 5 or y > self.y_max:
+            y = self.srf.distance()
             time.sleep(0.04)
 
+        x = time.monotonic() - self.start_time
+        return x, y
+
+    def filter_point(self, new_y):
         # tests if the point is not to far from the last point
         if len(self.points) == 0 or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
             return True
+        return False
 
     # adds the last points that were not drawn
     def add_points_not_drawn(self):
