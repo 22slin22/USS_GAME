@@ -26,8 +26,11 @@ class Function:
     def set_type(self, func_type, rand_transform=False):
         self.type = func_type
         if rand_transform:
-            if self.type == "lin":
-                self.rand_lin_transform()
+            self.randomize_transformation()
+
+    def randomize_transformation(self):
+        if self.type == "lin":
+            self.rand_lin_transform()
 
     def rand_lin_transform(self):
         """x transformations aren't used in linear functions"""

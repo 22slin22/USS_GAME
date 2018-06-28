@@ -179,7 +179,7 @@ class Game:
             if len(self.points) > 0:
                 self.graph.draw_start_point(self.points[-1][1])
 
-    def restart(self):
+    def restart(self, radomize_function=False):
         self.start_time = time.monotonic() + self.start_up_time
         self.uss.clear()
         self.points.clear()

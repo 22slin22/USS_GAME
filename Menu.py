@@ -131,7 +131,7 @@ class Functions(tk.Frame):
         #button1 = tk.Button(self, text="Go to the start page", image=img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
 
     def on_button_pressed(self, button_index):
-        print(button_index, "was pressed")
+        pass
 
 
 class Type(tk.Frame):
@@ -147,4 +147,4 @@ class Type(tk.Frame):
         button0.pack()
 
     def on_button_pressed(self, button_index):
-        print(button_index, "was pressed")
+        pass

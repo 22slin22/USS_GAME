@@ -26,7 +26,7 @@ class Graph(tk.Frame):
         self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
 
-        self.bind("<space>", self.restart)
+        self.bind("<space>", lambda event: self.restart)
 
         self.graph_x_end = self.canvas_width - 100
         self.graph_y_end = self.canvas_height - 100
@@ -57,17 +57,20 @@ class Graph(tk.Frame):
         self.controller.update_idletasks()
         self.controller.update()
 
-    def restart(self, event):
-        self.reset()
+    def restart(self, randomize_function=False):
+        self.reset(randomize_function)
         self.game.restart()
 
-    def reset(self):
+    def reset(self, randomize_function=False):
         clear_points()
 
         self.canvas.delete("all")
 
         draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end,
                   self.game.y_min, self.game.y_max)
+        if randomize_function:
+            self.function.randomize_transformation()
+            self.graph = self.function.return_function_values(self.game.interval)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
 
@@ -91,5 +94,9 @@ class Graph(tk.Frame):
                    self.game.total_time, self.game.y_max, self.game.y_min)
 
     def on_button_pressed(self, button_index):
-        print(button_index, "was pressed")
-        self.controller.showFrame("Functions")
+        if button_index == 0:
+            self.controller.show_frame("Functions")
+        if button_index == 1:
+            self.restart()
+        if button_index == 2:
+            self.restart(randomize_function=True)
