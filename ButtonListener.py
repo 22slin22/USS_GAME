@@ -1,9 +1,9 @@
-from RPi import GPIO
+# from RPi import GPIO
 import time
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(10, GPIO.IN)
-GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BOARD)
+#GPIO.setup(10, GPIO.IN)
+#GPIO.setwarnings(False)
 
 
 class ButtonListener:
@@ -19,14 +19,15 @@ class ButtonListener:
         self.frame_manager.bind("<Right>", lambda event, button_index=2: self.button_pressed(button_index))
 
     def check_buttons(self):
-        if GPIO.input(10) and self.state == False:
-            self.state = True
-            if time.monotonic() - self.time_last_click > self.time_click_gap:
-                self.button_pressed(0)
-                self.time_last_click = time.monotonic()
-    
-        if not GPIO.input(10):
-            self.state = False
+        #if GPIO.input(10) and self.state == False:
+        #    self.state = True
+        #    if time.monotonic() - self.time_last_click > self.time_click_gap:
+        #        self.button_pressed(0)
+        #        self.time_last_click = time.monotonic()
+        #
+        #if not GPIO.input(10):
+        #    self.state = False
+        pass
 
     def button_pressed(self, button_index):
         self.frame_manager.on_button_pressed(button_index)
