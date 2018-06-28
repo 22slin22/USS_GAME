@@ -89,7 +89,7 @@ class StartPage(tk.Frame):
         button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
 
     def on_button_pressed(self, button_index):
-        print(button_index, "was pressed")
+        self.controller.show_frame("Functions")
 
 
 class Functions(tk.Frame):

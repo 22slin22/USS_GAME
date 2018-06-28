@@ -202,7 +202,9 @@ class Game:
         self.func = func
         self.func_start = func_start
         self.func_end = func_end
+
         self.graph.add_function(self.func, self.func_start, self.func_end, self.interval)
+
         self.restart()
         self.graph.reset()
         self.run()

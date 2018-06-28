@@ -1,6 +1,7 @@
 from tkinter import *
 from Axis import *
 from Line import *
+from Functions import Function
 import tkinter as tk
 
 
@@ -13,9 +14,9 @@ class Graph(tk.Frame):
     def __init__(self, parent, controller, game):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-
-        # self.tk = Tk()
         self.game = game
+
+        self.function = Function()
 
         #   self.tk.overrideredirect(True)
 
@@ -80,8 +81,12 @@ class Graph(tk.Frame):
                                 font=("Times", 80), tags="countdown")
 
     def add_function(self, func, func_start, func_end, interval):
-        print("adding function")
-        self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
+        if func == "lin":
+            self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
+            self.function.set_type("lin", True)
+            self.graph = self.function.return_function_values(interval)
+        else:
+            self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
 
