@@ -98,8 +98,8 @@ class Functions(tk.Frame):
         self.game = game
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="Funktionen Typen", font=controller.title_font)
-        label.grid(row=0, column=2)
+        label = tk.Label(self, text="Funktionstypen", font=controller.title_font)
+        label.grid(row=0, column=1)
 
         # Sinus
         self.imgSin = tk.PhotoImage(file="Sinus.png")
@@ -117,8 +117,11 @@ class Functions(tk.Frame):
         # labelQuad = tk.Label(self, text="Quadratische").grid(row=2, column=0)
         # Exp
         self.imgExp = tk.PhotoImage(file="Expo.png")
-        buttQuad = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=1, column=3)
+        buttExp = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=2, column=0)
         # labelExp = tk.Label(self, text="Exponential").grid(row=2, column=0)
+
+        self.imgLin = tk.PhotoImage(file="Lin.png")
+        buttLin = tk.Button(self, image=self.imgLin, command=lambda: self.game.start("lin", 0, 5.4)).grid(row=2, column=1)
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")

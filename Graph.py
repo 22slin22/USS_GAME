@@ -92,3 +92,4 @@ class Graph(tk.Frame):
 
     def on_button_pressed(self, button_index):
         print(button_index, "was pressed")
+        self.controller.showFrame("Functions")
