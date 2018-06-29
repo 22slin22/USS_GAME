@@ -1,6 +1,7 @@
 import math
 import random
 
+# Amount on the graph that is left empty on the bottom and on the top
 PADDING = 50
 MIN_DISTANCE = 100
 
@@ -14,6 +15,7 @@ class Function:
     squeez_x = 1
     strech_y = 1
 
+    total_time = 0
     y_min = 0
     y_max = 0
     y_span = 0
@@ -34,6 +36,8 @@ class Function:
             self.rand_lin_transform()
         if self.type == "quad":
             self.rand_quad_transform()
+        if self.type == "sin":
+            self.rand_sin_transform()
 
     def rand_lin_transform(self):
         """x transformations aren't used in linear functions"""
@@ -63,6 +67,18 @@ class Function:
         self.strech_y = (y0 - yv) / math.pow(xv, 2)                     # derives from y = a(x-xv)² + yv
         self.shift_y = yv
 
+    def rand_sin_transform(self):
+        self.strech_y = random.randint(MIN_DISTANCE / 2, self.y_span / 2 - PADDING)
+        while math.fabs(self.strech_y*2) < MIN_DISTANCE:
+            self.strech_y = random.randint(MIN_DISTANCE/2, self.y_span/2 - PADDING)
+
+        self.shift_x = random.randint(0, self.total_time)      # shift any amount (sin is cyclic)
+        self.shift_y = self.y_span / 2                      # in the middle
+
+        periods = 2 * random.random() + 2                       # 1-2 periods
+        self.squeez_x = periods * math.pi / self.total_time     # scaled to the scale   sin(2*pi*x) -> one period prom 0 to 1
+
+
     def return_function_values(self, interval):
         line = []
         for i in range(int(self.total_time / interval)):
@@ -77,7 +93,7 @@ class Function:
 
 def functions(func, x):
     if func == "sin":
-        return math.sin(x) * 100 + 150
+        return math.sin(x)
     elif func == "quad":
         return math.pow(x, 2)
     elif func == "log":
