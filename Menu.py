@@ -63,6 +63,7 @@ class FrameManager(tk.Tk):
 
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
+        print("Pressed", button_index)
 
     def run(self):
         while True:
