@@ -15,23 +15,6 @@ class Game:
     # number of data points that are average to the velocity
     velocity_average = 4
 
-    # func = "exp"
-    # func_start = 0
-    # func_end = 5.4
-
-    # func = "log"
-    # func_start = 1
-    # func_end = 70
-
-    # func = "quad"
-    # func_start = -13
-    # func_end = 13
-
-    # func = "cos"
-    # func = "sin"
-    # func_start = 0
-    # func_end = 12.6
-
     interval = 0.05
     total_time = 20
 
@@ -68,8 +51,6 @@ class Game:
         # self.run()
 
         self.func = None
-        self.func_start = None
-        self.func_end = None
 
         self.frameManager = Menu.FrameManager(self)
         self.button_listener = ButtonListener(self.frameManager)
@@ -177,7 +158,7 @@ class Game:
             if len(self.points) > 0:
                 self.graph.draw_start_point(self.points[-1][1])
 
-    def restart(self, radomize_function=False):
+    def restart(self):
         self.start_time = time.monotonic() + self.start_up_time
         self.uss.clear()
         self.points.clear()
@@ -189,19 +170,17 @@ class Game:
 
         for point in self.points:
             if point[0] > 0:
-                y_ = functions(self.func, point[0] / self.total_time * (self.func_end - self.func_start) + self.func_start)
+                y_ = self.graph.function.evaluate(point[0])
                 loss += math.fabs(y_ - point[1])
 
         loss = loss / len(self.points)
         return loss
 
-    def start(self, func, func_start, func_end):
+    def start(self, func):
         self.frameManager.show_frame("Graph")
         self.func = func
-        self.func_start = func_start
-        self.func_end = func_end
 
-        self.graph.add_function(self.func, self.func_start, self.func_end, self.interval)
+        self.graph.add_function(self.func, self.interval)
 
         self.restart()
         self.graph.reset()

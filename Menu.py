@@ -63,7 +63,6 @@ class FrameManager(tk.Tk):
 
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
-        print("Pressed", button_index)
 
     def run(self):
         while True:
@@ -104,25 +103,25 @@ class Functions(tk.Frame):
 
         # Sinus
         self.imgSin = tk.PhotoImage(file="Sinus.png")
-        buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin", 0, 12.6)).grid(row=1, column=0)
+        buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin")).grid(row=1, column=0)
         # labelSin = tk.Label(self, text="Trigonometrische").grid(row=2, column=0)
 
         # Logarythm
         self.imgLog = tk.PhotoImage(file="Log.png")
-        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log", 1, 70)).grid(row=1, column=1)
+        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log")).grid(row=1, column=1)
         # labelLog = tk.Label(self, text="Logarythmische").grid(row=2, column=0)
 
         # Quadratic
         self.imgQuad = tk.PhotoImage(file="Quad.png")
-        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad", -13, 13)).grid(row=1, column=2)
+        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad")).grid(row=1, column=2)
         # labelQuad = tk.Label(self, text="Quadratische").grid(row=2, column=0)
         # Exp
         self.imgExp = tk.PhotoImage(file="Expo.png")
-        buttExp = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp", 0, 5.4)).grid(row=2, column=0)
+        buttExp = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp")).grid(row=2, column=0)
         # labelExp = tk.Label(self, text="Exponential").grid(row=2, column=0)
 
         self.imgLin = tk.PhotoImage(file="Lin.png")
-        buttLin = tk.Button(self, image=self.imgLin, command=lambda: self.game.start("lin", 0, 5.4)).grid(row=2, column=1)
+        buttLin = tk.Button(self, image=self.imgLin, command=lambda: self.game.start("lin")).grid(row=2, column=1)
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")

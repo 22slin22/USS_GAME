@@ -83,13 +83,10 @@ class Graph(tk.Frame):
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text=str(seconds),
                                 font=("Times", 80), tags="countdown")
 
-    def add_function(self, func, func_start, func_end, interval):
-        if func == "lin" or func == "quad" or func == "sin":
-            self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
-            self.function.set_type(func, True)
-            self.graph = self.function.return_function_values(interval)
-        else:
-            self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)
+    def add_function(self, func, interval):
+        self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
+        self.function.set_type(func, True)
+        self.graph = self.function.return_function_values(interval)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
 

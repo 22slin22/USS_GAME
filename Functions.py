@@ -34,10 +34,14 @@ class Function:
     def randomize_transformation(self):
         if self.type == "lin":
             self.rand_lin_transform()
-        if self.type == "quad":
+        elif self.type == "quad":
             self.rand_quad_transform()
-        if self.type == "sin":
+        elif self.type == "sin":
             self.rand_sin_transform()
+        elif self.type == "exp":
+            self.rand_exp_transform()
+        elif self.type == "log":
+            self.rand_log_transform()
 
     def rand_lin_transform(self):
         """x transformations aren't used in linear functions"""
@@ -73,17 +77,45 @@ class Function:
             self.strech_y = random.randint(MIN_DISTANCE/2, self.y_span/2 - PADDING)
 
         self.shift_x = random.randint(0, self.total_time)      # shift any amount (sin is cyclic)
-        self.shift_y = self.y_span / 2                      # in the middle
+        self.shift_y = (self.y_min + self.y_max) / 2                      # in the middle
 
         periods = 2 * random.random() + 2                       # 1-2 periods
         self.squeez_x = periods * math.pi / self.total_time     # scaled to the scale   sin(2*pi*x) -> one period prom 0 to 1
 
+    def rand_exp_transform(self):
+        self.shift_x = 0
+        self.shift_y = self.y_min + PADDING      # not random to get a reasonable graph
+
+        self.squeez_x = random.random()     # so small to fit the plot on the graph
+        self.strech_y = random.random()
+
+        y_right = self.evaluate(self.total_time)
+        while not (self.y_min + PADDING < int(y_right) < self.y_max - PADDING and y_right - self.shift_y > MIN_DISTANCE):
+            self.squeez_x = random.random()
+            self.strech_y = random.random()
+            y_right = self.evaluate(self.total_time)
+
+    def rand_log_transform(self):
+        self.shift_x = -1       # so no infinite values
+        self.shift_y = self.y_min + PADDING     # to fit graph
+
+        self.strech_y = random.randint(1, 100)
+        self.squeez_x = random.randint(1, 15)
+
+        y_right = self.evaluate(self.total_time)
+        while not (self.y_min + PADDING < int(y_right) < self.y_max - PADDING and y_right - self.shift_y > MIN_DISTANCE):
+            self.strech_y = random.randint(1, 100)
+            self.squeez_x = random.randint(1, 15)
+            y_right = self.evaluate(self.total_time)
+
+    def evaluate(self, x):
+        return self.strech_y * functions(self.type, self.squeez_x * x - self.shift_x) + self.shift_y
 
     def return_function_values(self, interval):
         line = []
         for i in range(int(self.total_time / interval)):
             x = i * interval
-            y = self.strech_y * functions(self.type, self.squeez_x * x - self.shift_x) + self.shift_y
+            y = self.evaluate(x)
             line.append([x, y])
 
         return line
@@ -97,9 +129,9 @@ def functions(func, x):
     elif func == "quad":
         return math.pow(x, 2)
     elif func == "log":
-        return 35 * math.log(x, 2) + 50
+        return math.log(x, math.e)
     elif func == "exp":
-        return math.pow(math.e, x) + 50
+        return math.pow(2, x)
     elif func == "lin":
         return x
 
