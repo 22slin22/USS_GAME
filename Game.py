@@ -109,7 +109,6 @@ class Game:
                             if len(self.points) > self.velocity_average:
                                 v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
                                 self.graph.new_point([x, v])
-                                print(v)
 
                         elif self.check_override(y):
                             self.add_points_not_drawn()
@@ -117,7 +116,6 @@ class Game:
                             if len(self.points) > self.velocity_average:
                                 v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
                                 self.graph.new_point([x, v])
-                                print(v)
 
                         else:
                             self.points_not_drawn += 1

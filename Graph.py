@@ -84,9 +84,9 @@ class Graph(tk.Frame):
                                 font=("Times", 80), tags="countdown")
 
     def add_function(self, func, func_start, func_end, interval):
-        if func == "lin":
+        if func == "lin" or func == "quad":
             self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
-            self.function.set_type("lin", True)
+            self.function.set_type(func, True)
             self.graph = self.function.return_function_values(interval)
         else:
             self.graph = generate_function_points(func, func_start, func_end, interval, self.game.total_time)

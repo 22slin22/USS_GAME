@@ -25,8 +25,6 @@ def generate_function_points(func, func_start, func_end, interval, total_time):
 
 
 def draw_graph(canvas, line, graph_x_start, graph_x_end, graph_y_start, graph_y_end, total_time, y_max, y_min):
-    print(graph_x_start, graph_x_end)
-    print(graph_y_start, graph_y_end)
     for i, pos in enumerate(line):
         if i == 0:
             continue
