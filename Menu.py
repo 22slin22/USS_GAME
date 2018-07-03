@@ -66,7 +66,7 @@ class FrameManager(tk.Tk):
 
     def run(self):
         while True:
-            if not self.button_listener is None:
+            if self.button_listener is not None:
                 self.button_listener.check_buttons()
             self.tick()
 
