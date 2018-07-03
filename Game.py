@@ -112,6 +112,7 @@ class Game:
                 self.graph.draw_score(score)
                 print(loss, score)
 
+            self.button_listener.check_buttons()
             self.graph.update()
             time.sleep(0.2)
 
