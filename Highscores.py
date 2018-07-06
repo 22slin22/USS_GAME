@@ -1,5 +1,6 @@
 import pickle
 import time
+import Game
 
 
 def date():
@@ -11,6 +12,8 @@ def date():
 
 
 Highscores = []
+
+highscore = Game().get_score()
 
 Top_10 = []
 
@@ -27,9 +30,8 @@ def remove_lowest_score():
         return Highscores
 
 
-def new_highscore(name, highscore, date):
+def new_highscore(highscore, date):
     locallist = []
-    locallist.append(name)
     locallist.append(highscore)
     locallist.append(date)
     Highscores.append(locallist)

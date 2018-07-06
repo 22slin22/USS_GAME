@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import *
 from tkinter import font as tkfont
 from Graph import Graph
 
@@ -46,7 +47,7 @@ class FrameManager(tk.Tk):
 
         self.game.set_graph(self.frames["Graph"])
 
-        self.show_frame("StartPage")
+        self.show_frame("Type")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -103,25 +104,25 @@ class Functions(tk.Frame):
 
         # Sinus
         self.imgSin = tk.PhotoImage(file="Sinus.png")
-        buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.start("sin")).grid(row=1, column=0)
+        buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.set_func("sin")).grid(row=1, column=0)
         # labelSin = tk.Label(self, text="Trigonometrische").grid(row=2, column=0)
 
         # Logarythm
         self.imgLog = tk.PhotoImage(file="Log.png")
-        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.start("log")).grid(row=1, column=1)
+        buttLog = tk.Button(self, image=self.imgLog, command=lambda: self.game.set_func("log")).grid(row=1, column=1)
         # labelLog = tk.Label(self, text="Logarythmische").grid(row=2, column=0)
 
         # Quadratic
         self.imgQuad = tk.PhotoImage(file="Quad.png")
-        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.start("quad")).grid(row=1, column=2)
+        buttQuad = tk.Button(self, image=self.imgQuad, command=lambda: self.game.set_func("quad")).grid(row=1, column=2)
         # labelQuad = tk.Label(self, text="Quadratische").grid(row=2, column=0)
         # Exp
         self.imgExp = tk.PhotoImage(file="Expo.png")
-        buttExp = tk.Button(self, image=self.imgExp, command=lambda: self.game.start("exp")).grid(row=2, column=0)
+        buttExp = tk.Button(self, image=self.imgExp, command=lambda: self.game.set_func("exp")).grid(row=2, column=0)
         # labelExp = tk.Label(self, text="Exponential").grid(row=2, column=0)
 
         self.imgLin = tk.PhotoImage(file="Lin.png")
-        buttLin = tk.Button(self, image=self.imgLin, command=lambda: self.game.start("lin")).grid(row=2, column=1)
+        buttLin = tk.Button(self, image=self.imgLin, command=lambda: self.game.set_func("lin")).grid(row=2, column=1)
 
         # GO BACK TO START BUTTON
         self.img0 = tk.PhotoImage(file="Back_Arrow.png")
@@ -136,15 +137,54 @@ class Functions(tk.Frame):
 
 class Type(tk.Frame):
 
+    selected_button = 0
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="About/Help Page", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+        # label = tk.Label(self, text="Funtionenart", font=controller.title_font)
+        # label.pack(side="top", fill="x", pady=10)
 
-        self.img0 = tk.PhotoImage(file="Back_Arrow.png")
-        button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("Functions"))
-        button0.pack()
+        # self.img0 = tk.PhotoImage(file="Back_Arrow.png")
+        # button0 = tk.Button(self, text="Go to the start page", image=self.img0, command=lambda: controller.show_frame("Functions"))
+        # button0.pack()
+
+        self.width = self.winfo_screenwidth()
+        self.height = self.winfo_screenheight()
+        self.canvas = Canvas(self, width=self.width, height=self.height)
+        self.canvas.pack()
+
+        button_width = 300
+        button_height = 300
+        button_gap = 50
+        """left button (t/x)"""
+        self.buttons = []
+        self.buttons.append(self.canvas.create_rectangle(self.width/2 - button_gap/2 - button_width, self.height/2 - button_height/2,
+                                     self.width/2 - button_gap/2, self.height/2 + button_height/2, fill="orange", tags="0"))
+        self.canvas.create_text(self.width/2 - button_gap/2 - button_width/2, self.height/2, text="t-x",
+                                font=("Times", 60))
+        """right button (t/v)"""
+        self.buttons.append(self.canvas.create_rectangle(self.width / 2 + button_gap / 2, self.height / 2 - button_height / 2,
+                                     self.width / 2 + button_gap / 2 + button_width, self.height / 2 + button_height / 2, tags="1"))
+        self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
+                                font=("Times", 60))
+
+    #def draw_button(self, index):
+    #    if index == 0:
+
 
     def on_button_pressed(self, button_index):
-        pass
+        if button_index == 0:
+            if self.selected_button > 0:
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+                self.selected_button -= 1
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+        if button_index == 1:
+            self.controller.game.mode = self.selected_button
+            self.controller.game.start()
+
+        if button_index == 2:
+            if self.selected_button < 1:
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+                self.selected_button += 1
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")

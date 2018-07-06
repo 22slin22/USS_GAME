@@ -42,6 +42,8 @@ class Game:
 
     running = True
 
+    scores = []
+
     def __init__(self):
 
         # self.graph = Graph(self)
@@ -108,9 +110,9 @@ class Game:
 
                 self.running = False
                 loss = self.calculate_loss()
-                score = int(100000 / loss)
-                self.graph.draw_score(score)
-                print(loss, score)
+                self.scores.append(int(100000 / loss))
+                print(loss, self.scores[-1])
+                self.graph.draw_score(self.scores[-1])
 
             self.button_listener.check_buttons()
             self.graph.update()
@@ -177,9 +179,8 @@ class Game:
         loss = loss / len(self.points)
         return loss
 
-    def start(self, func):
+    def start(self):
         self.frameManager.show_frame("Graph")
-        self.func = func
 
         self.graph.add_function(self.func, self.interval)
 
@@ -199,6 +200,10 @@ class Game:
 
     def set_graph(self, graph):
         self.graph = graph
+
+    def set_func(self, func):
+        self.func = func
+        self.frameManager.show_frame("Type")
 
 if __name__ == '__main__':
     game = Game()

@@ -1,13 +1,15 @@
-from RPi import GPIO
+#from RPi import GPIO
 import time
 
 buttons = [11, 13, 15]
 
+"""
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
+"""
 
-for button in buttons:
-    GPIO.setup(button, GPIO.IN)
+#for button in buttons:
+#    GPIO.setup(button, GPIO.IN)
 
 
 class ButtonListener:
@@ -23,6 +25,7 @@ class ButtonListener:
         self.frame_manager.bind("<Right>", lambda event, button_index=2: self.button_pressed(button_index))
 
     def check_buttons(self):
+        """
         for i, button in enumerate(buttons):
             if GPIO.input(button) and self.state[i] == False:
                 self.state[i] = True
@@ -32,7 +35,7 @@ class ButtonListener:
         
             if not GPIO.input(button):
                 self.state[i] = False
-        #pass
-
+        """
+        pass
     def button_pressed(self, button_index):
         self.frame_manager.on_button_pressed(button_index)
