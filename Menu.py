@@ -47,7 +47,7 @@ class FrameManager(tk.Tk):
 
         self.game.set_graph(self.frames["Graph"])
 
-        self.show_frame("Type")
+        self.show_frame("StartPage")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -180,6 +180,12 @@ class Type(tk.Frame):
                 self.selected_button -= 1
                 self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
         if button_index == 1:
+            if self.selected_button == 0:
+                self.controller.game.y_min = 0
+                self.controller.game.y_max = 300
+            elif self.selected_button == 1:
+                self.controller.game.y_min = -100
+                self.controller.game.y_max = 100
             self.controller.game.mode = self.selected_button
             self.controller.game.start()
 
