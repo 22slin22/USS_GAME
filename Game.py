@@ -105,7 +105,8 @@ class Game:
                         self.uss.append([x, y])
 
                         self.countdown()
-
+                        
+                    self.button_listener.check_buttons()
                     time.sleep(self.waiting_time)
 
                 self.running = False

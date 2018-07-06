@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import font as tkfont
 from Graph import Graph
+from Utils import *
 
 
 class FrameManager(tk.Tk):
@@ -168,6 +169,8 @@ class Type(tk.Frame):
                                      self.width / 2 + button_gap / 2 + button_width, self.height / 2 + button_height / 2, tags="1"))
         self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
                                 font=("Times", 60))
+        draw_button_info(self.canvas, "", "", "")
+
 
     #def draw_button(self, index):
     #    if index == 0:

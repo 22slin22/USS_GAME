@@ -1,7 +1,7 @@
 from RPi import GPIO
 import time
 
-buttons = [11, 13, 15]
+buttons = [11, 12, 13]
 
 
 GPIO.setmode(GPIO.BOARD)
