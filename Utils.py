@@ -1,10 +1,10 @@
-button_width = 30
-button_height = 30
+button_width = 50
+button_height = 50
 
 button_delta_y = 90
-button_delta_x = 30
+button_delta_x = 40
 
-button_gap = 10
+button_gap = 20
 
 def draw_button_info(canvas, text0, text1, text2):
     width = canvas.winfo_screenwidth()

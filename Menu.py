@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import font as tkfont
 from Graph import Graph
 from Utils import *
+from Functions import Function
 
 
 class FrameManager(tk.Tk):
@@ -96,13 +97,68 @@ class StartPage(tk.Frame):
 
 class Functions(tk.Frame):
 
+    selected_button = 0
+
     def __init__(self, parent, controller, game):
         self.game = game
         tk.Frame.__init__(self, parent)
-        self.controller = controller
-        label = tk.Label(self, text="Funktionstypen", font=controller.title_font)
-        label.grid(row=0, column=1)
+        # self.controller = controller
+        # label = tk.Label(self, text="Funktionstypen", font=controller.title_font)
+        # label.grid(row=0, column=1)
 
+        self.width = self.winfo_screenwidth()
+        self.height = self.winfo_screenheight()
+        self.canvas = Canvas(self, width=self.width, height=self.height)
+        self.canvas.pack()
+
+        self.num_buttons = 5
+        button_width = 200
+        button_height = 200
+        button_gap = 50
+        
+        self.buttons = []
+        function = Function()
+        function.set_scale(y_min=0, y_max=1, total_time=1)
+
+        for i in range(self.num_buttons):
+            # (button_width*num_buttons + button_gap*(num_buttons-1))/2 to get the left most coordiante
+            # i(button_width + button_gap)  to get the current x coordinate
+            x1 = self.width/2 - (button_width*self.num_buttons + button_gap*(self.num_buttons-1))/2 + i*(button_width + button_gap)
+            y1 = self.height/2 - button_height/2
+            x2 = self.width/2 - (button_width*self.num_buttons + button_gap*(self.num_buttons-1))/2 + (i+1)*button_width + i*button_gap
+            y2 = self.height/2 + button_height/2
+            
+            self.buttons.append(self.canvas.create_rectangle(x1, y1, x2, y2, fill="white"))
+
+            if i == 0:
+                function.set_type("lin")
+                function.set_transformations(0, 0.25, 1, 0.5)
+            elif i == 1:
+                function.set_type("exp")
+                function.set_transformations(0, 0, 5, 0.0234)
+            elif i == 2:
+                function.set_type("log")
+                function.set_transformations(-1, 0, 30, 0.221)
+            elif i == 3:
+                function.set_type("quad")
+                function.set_transformations(0.5, 0.25, 1, 2)
+            elif i == 4:
+                function.set_type("sin")
+                function.set_transformations(0, 0.5, 6.3, 0.3)
+
+            function.draw(self.canvas, x1, y1, x2, y2, interval=0.05)
+
+
+        # colour the first button orange
+        self.canvas.itemconfig(self.buttons[0], fill="orange")
+
+        function.set_type("lin")
+        function.set_transformations(0, 0.25, 1, 0.5)
+        
+
+        
+
+        """
         # Sinus
         self.imgSin = tk.PhotoImage(file="Sinus.png")
         buttSin = tk.Button(self, image=self.imgSin, command=lambda: self.game.set_func("sin")).grid(row=1, column=0)
@@ -131,9 +187,31 @@ class Functions(tk.Frame):
 
 
         #button1 = tk.Button(self, text="Go to the start page", image=img0, command=lambda: controller.show_frame("StartPage")).grid(row=100, column=0)
+        """
 
     def on_button_pressed(self, button_index):
-        pass
+        if button_index == 0:
+            if self.selected_button > 0:
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+                self.selected_button -= 1
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+        if button_index == 1:
+            if self.selected_button == 0:
+                self.game.set_func("lin")
+            elif self.selected_button == 1:
+                self.game.set_func("exp")
+            elif self.selected_button == 2:
+                self.game.set_func("log")
+            elif self.selected_button == 3:
+                self.game.set_func("quad")
+            elif self.selected_button == 4:
+                self.game.set_func("sin")
+
+        if button_index == 2:
+            if self.selected_button < self.num_buttons-1:
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+                self.selected_button += 1
+                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
 
 
 class Type(tk.Frame):

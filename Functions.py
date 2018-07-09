@@ -113,12 +113,32 @@ class Function:
 
     def return_function_values(self, interval):
         line = []
-        for i in range(int(self.total_time / interval)):
+        for i in range(int(self.total_time / interval) +1):
             x = i * interval
             y = self.evaluate(x)
             line.append([x, y])
 
         return line
+
+    def set_transformations(self, shift_x, shift_y, squeez_x, strech_y):
+        self.shift_x = shift_x
+        self.shift_y = shift_y
+        self.squeez_x = squeez_x
+        self.strech_y = strech_y
+
+    def draw(self, canvas, graph_x_start, graph_y_start, graph_x_end, graph_y_end, interval):
+        line = self.return_function_values(interval)
+        for i, pos in enumerate(line):
+            if i == 0:
+                continue
+
+            x1 = line[i-1][0]/self.total_time * (graph_x_end - graph_x_start) + graph_x_start
+            y1 = graph_y_end - ((line[i-1][1] - self.y_min)/(self.y_max - self.y_min) * (graph_y_end - graph_y_start))
+
+            x2 = pos[0]/self.total_time * (graph_x_end - graph_x_start) + graph_x_start
+            y2 = graph_y_end - ((pos[1] - self.y_min)/(self.y_max - self.y_min) * (graph_y_end - graph_y_start))
+
+            canvas.create_line(x1, y1, x2, y2, fill="grey", width=2)
 
 
 
