@@ -18,10 +18,9 @@ class Graph(tk.Frame):
 
         self.function = Function()
 
-        #   self.tk.overrideredirect(True)
-
         self.canvas_width = self.winfo_screenwidth()
         self.canvas_height = self.winfo_screenheight()
+        print("canvas height:", self.canvas_height)
 
         self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
@@ -34,12 +33,12 @@ class Graph(tk.Frame):
 
         self.pixels_per_second = (self.graph_x_end - self.graph_x_start) / game.total_time
         self.pixels_per_cm = (self.graph_y_end - self.graph_y_start) / (game.y_max - game.y_min)
-
         draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end, self.game.y_min, self.game.y_max)
 
     def new_point(self, new_point):
         x = new_point[0] * self.pixels_per_second
         y = (new_point[1] - self.game.y_min) * self.pixels_per_cm
+        print("y:", y)
         draw_new_point(self.canvas, [x, y], self.graph_x_start, self.graph_y_end)
 
         self.refresh()
@@ -66,6 +65,8 @@ class Graph(tk.Frame):
 
         self.canvas.delete("all")
 
+        self.pixels_per_second = (self.graph_x_end - self.graph_x_start) / self.game.total_time
+        self.pixels_per_cm = (self.graph_y_end - self.graph_y_start) / (self.game.y_max - self.game.y_min)
         draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end,
                   self.game.y_min, self.game.y_max)
         if randomize_function:
@@ -98,6 +99,7 @@ class Graph(tk.Frame):
 
     def on_button_pressed(self, button_index):
         if button_index == 0:
+            self.game.running = False
             self.controller.show_frame("Functions")
             self.game.scores = []
         if button_index == 1:

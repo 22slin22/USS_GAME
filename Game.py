@@ -13,7 +13,7 @@ VELOCITY = 1
 class Game:
     mode = 0
     # number of data points that are average to the velocity
-    velocity_average = 4
+    velocity_average = 5
 
     interval = 0.05
     total_time = 20
@@ -37,6 +37,8 @@ class Game:
 
     # stores every single point measured
     uss = []
+    # stores all valid points (only used while t-v is active)
+    uss_valid = []
     # stores only points that are drawn
     points = []
 
@@ -61,63 +63,66 @@ class Game:
         self.frameManager.run()
 
     def run(self):
-        while True:
-            while self.running:
-                while time.monotonic() - self.start_time < self.total_time:
-                    if self.mode == DISTANCE:
-                        x, y = self.get_distance()
-                        
-                        if self.filter_point(y):
-                            self.graph.new_point([x, y])
-                            self.points.append([x, y])
-                            self.points_not_drawn = 0
-                        elif self.check_override(y):
-                            self.add_points_not_drawn()
-                            self.graph.new_point([x, y])
-                            self.points.append([x, y])
-                        else:
-                            self.points_not_drawn += 1
-                        self.uss.append([x, y])
+        while self.running and time.monotonic() - self.start_time < self.total_time:
+            if self.mode == DISTANCE:
+                x, y = self.get_distance()
 
-                        self.start_point()
+                if self.filter_point(y):
+                    self.graph.new_point([x, y])
+                    self.points.append([x, y])
+                    self.points_not_drawn = 0
+                elif self.check_override(y):
+                    self.add_points_not_drawn()
+                    self.graph.new_point([x, y])
+                    self.points.append([x, y])
+                else:
+                    self.points_not_drawn += 1
+                self.uss.append([x, y])
 
-                        self.countdown()
+                self.start_point()
 
-                    elif self.mode == VELOCITY:
-                        y = self.srf.distance()
-                        x = time.monotonic() - self.start_time
-                        if self.filter_point(y):
-                            self.points.append([x, y])
-                            self.points_not_drawn = 0
-                            if len(self.points) > self.velocity_average:
-                                v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
-                                self.graph.new_point([x, v])
+                self.countdown()
 
-                        elif self.check_override(y):
-                            self.add_points_not_drawn()
-                            self.points.append([x, y])
-                            if len(self.points) > self.velocity_average:
-                                v = (y - self.points[-self.velocity_average][1]) / (x - self.points[-self.velocity_average][0])
-                                self.graph.new_point([x, v])
+            elif self.mode == VELOCITY:
+                x, y = self.get_distance()
+                print("y:", y)
+                if self.filter_point(y):
+                    self.uss_valid.append([x, y])
+                    self.points_not_drawn = 0
+                    if len(self.uss_valid) > self.velocity_average:
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        print("v:", v)
+                        self.graph.new_point([x, v])
+                        self.points.append([x, v])
+                """
+                elif self.check_override(y):
+                    self.add_points_not_drawn(velocity=True)
+                    self.uss_valid.append([x, y])
+                    if len(self.uss_valid) > self.velocity_average:
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        self.graph.new_point([x, v])
+                        self.points.append([x, v])
 
-                        else:
-                            self.points_not_drawn += 1
-                        self.uss.append([x, y])
+                else:
+                    self.points_not_drawn += 1
+                self.uss.append([x, y])
+                """
 
-                        self.countdown()
-                        
-                    self.button_listener.check_buttons()
-                    time.sleep(self.waiting_time)
-
-                self.running = False
-                loss = self.calculate_loss()
-                self.scores.append(int(100000 / loss))
-                print(loss, self.scores[-1])
-                self.graph.draw_score(self.scores[-1])
+                self.countdown()
 
             self.button_listener.check_buttons()
-            self.graph.update()
-            time.sleep(0.2)
+            time.sleep(self.waiting_time)
+
+        self.running = False
+        loss = self.calculate_loss()
+        self.scores.append(int(1000 / loss))
+        print(loss, self.scores[-1])
+        self.graph.draw_score(self.scores[-1])
+
+        #self.button_listener.check_buttons()
+        #self.graph.update()
+        #time.sleep(0.2)
+        print("not running anymore")
 
     def get_distance(self):
         y = self.srf.distance()
@@ -130,26 +135,33 @@ class Game:
 
     def filter_point(self, new_y):
         # tests if the point is not to far from the last point
-        if len(self.points) == 0 or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
-            return True
+        if self.mode == DISTANCE:
+            if len(self.points) == 0 or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
+                return True
+        elif self.mode == VELOCITY:
+            if len(self.uss_valid) == 0 or math.fabs(new_y - self.uss_valid[-1][1]) < self.spike_delta_y:
+                return True
         return False
 
     # adds the last points that were not drawn
-    def add_points_not_drawn(self):
+    def add_points_not_drawn(self, velocity=False):
         for i in range(self.spike_override-1):          # -1 because the new point has not been added yet
             x = self.uss[-(self.spike_override-1-i)][0]
             y = self.uss[-(self.spike_override-1-i)][1]
-            self.graph.new_point([x, y])
-            self.points.append([x, y])
+            if not velocity:
+                self.graph.new_point([x, y])
+                self.points.append([x, y])
+            else:
+                self.uss_valid.append([x, y])
         self.points_not_drawn = 0
 
     # return True if the the last spike_override points should be added because they all lay on one "line"
     def check_override(self, new_y):
         if self.points_not_drawn >= self.spike_override:
-            # tests if the newest point lays on the new line
+            # tests if the newest point lays not on the new line
             if not (math.fabs(new_y - self.uss[-1][1]) < self.spike_delta_y):
                 return False
-            # tests if the last points all lay on one line
+            # tests if the last points not all lay on one line
             for i in range(self.spike_override - 1):
                 if not (math.fabs(self.uss[-i-1][1] - self.uss[-i-2][1]) < self.spike_delta_y):
                     return False
@@ -166,8 +178,10 @@ class Game:
         self.start_time = time.monotonic() + self.start_up_time
         self.uss.clear()
         self.points.clear()
-        self.running = True
         self.show_countdown = True
+        if not self.running:
+            self.running = True
+            self.run()
 
     def calculate_loss(self):
         loss = 0

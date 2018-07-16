@@ -13,10 +13,16 @@ class FrameManager(tk.Tk):
 
     def __init__(self, game, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        #self.pad = 3
+        # self.pad = 3
         self._geom = '1000x800+0+0'
         self.geometry("{0}x{1}+0+0".format(self.winfo_screenwidth(), self.winfo_screenheight()))
-        self.bind('<Escape>', self.toggle_geom)
+
+        self.overrideredirect(True)
+        self.overrideredirect(False)
+        self.attributes("-fullscreen", True)
+        self.wm_attributes("-topmost", 1)
+        # self.bind('<Escape>', self.toggle_geom)
+        self.bind('<Escape>', lambda event: self.destroy())
 
         self.game = game
 
@@ -63,6 +69,10 @@ class FrameManager(tk.Tk):
         self.geometry(self._geom)
         self._geom = geom
         self.overrideredirect(False)
+
+    def close(self, event=None):
+        print("escaped")
+        self.destroy()
 
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
@@ -248,10 +258,6 @@ class Type(tk.Frame):
         self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
                                 font=("Times", 60))
         draw_button_info(self.canvas, "", "", "")
-
-
-    #def draw_button(self, index):
-    #    if index == 0:
 
 
     def on_button_pressed(self, button_index):
