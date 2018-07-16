@@ -9,7 +9,7 @@ def draw_new_point(canvas, pos, graph_x_start, graph_y_end):
     y = graph_y_end - pos[1]
 
     if len(points) > 0:
-        canvas.create_line(points[-1][0], points[-1][1], x, y, fill="orange", width=3)
+        canvas.create_line(points[-1][0], points[-1][1], x, y, fill="red", width=3)
 
     points.append([x, y])
 
@@ -35,7 +35,7 @@ def draw_graph(canvas, line, graph_x_start, graph_x_end, graph_y_start, graph_y_
         x2 = pos[0]/total_time * (graph_x_end - graph_x_start) + graph_x_start
         y2 = graph_y_end - ((pos[1] - y_min)/(y_max - y_min) * (graph_y_end - graph_y_start))
 
-        canvas.create_line(x1, y1, x2, y2, fill="grey", width=2)
+        canvas.create_line(x1, y1, x2, y2, fill="black", width=3)
 
 
 def clear_points():

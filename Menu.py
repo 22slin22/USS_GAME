@@ -156,7 +156,7 @@ class Functions(tk.Frame):
                 function.set_type("sin")
                 function.set_transformations(0, 0.5, 6.3, 0.3)
 
-            function.draw(self.canvas, x1, y1, x2, y2, interval=0.05)
+            function.draw(self.canvas, x1, y1, x2, y2, interval=0.05, width=2)
 
 
         # colour the first button orange

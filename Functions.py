@@ -126,7 +126,7 @@ class Function:
         self.squeez_x = squeez_x
         self.strech_y = strech_y
 
-    def draw(self, canvas, graph_x_start, graph_y_start, graph_x_end, graph_y_end, interval):
+    def draw(self, canvas, graph_x_start, graph_y_start, graph_x_end, graph_y_end, interval, width=5):
         line = self.return_function_values(interval)
         for i, pos in enumerate(line):
             if i == 0:
@@ -138,7 +138,7 @@ class Function:
             x2 = pos[0]/self.total_time * (graph_x_end - graph_x_start) + graph_x_start
             y2 = graph_y_end - ((pos[1] - self.y_min)/(self.y_max - self.y_min) * (graph_y_end - graph_y_start))
 
-            canvas.create_line(x1, y1, x2, y2, fill="grey", width=2)
+            canvas.create_line(x1, y1, x2, y2, fill="grey", width=width)
 
 
 

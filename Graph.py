@@ -38,7 +38,6 @@ class Graph(tk.Frame):
     def new_point(self, new_point):
         x = new_point[0] * self.pixels_per_second
         y = (new_point[1] - self.game.y_min) * self.pixels_per_cm
-        print("y:", y)
         draw_new_point(self.canvas, [x, y], self.graph_x_start, self.graph_y_end)
 
         self.refresh()
@@ -48,7 +47,7 @@ class Graph(tk.Frame):
         y = (self.graph_y_end - (y * self.pixels_per_cm))
 
         self.canvas.delete('start_point')
-        self.canvas.create_oval(x-5, y-5, x+5, y+5, fill="orange", tags='start_point')
+        self.canvas.create_oval(x-5, y-5, x+5, y+5, fill="red", tags='start_point')
 
         self.refresh()
 
@@ -82,7 +81,7 @@ class Graph(tk.Frame):
                                 font=("Times", 50))
         for i, score in enumerate(self.game.scores):
             self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1 / 3 + 50*i,
-                                    text= str(i + 1) + ". Spieler " + str(score),
+                                    text=str(i + 1) + ". Spieler " + str(score),
                                     font=("Times", 30))
 
     def draw_countdown(self, seconds):
