@@ -1,18 +1,43 @@
-button_width = 50
-button_height = 50
+button_width = 70
+button_height = 70
 
-button_delta_y = 90
+button_delta_y = 40
 button_delta_x = 40
 
 button_gap = 20
 
-def draw_button_info(canvas, text0, text1, text2):
+
+def draw_button_info(canvas, button_type0, button_type1, button_type2):
     width = canvas.winfo_screenwidth()
     height = canvas.winfo_screenheight()
-    
-    canvas.create_rectangle(width - button_delta_x - 3*button_width - 2*button_gap, height - button_delta_y - button_height,
-                            width - button_delta_x - 2*button_width - 2*button_gap, height - button_delta_y)
-    canvas.create_rectangle(width - button_delta_x - 2*button_width - button_gap, height - button_delta_y - button_height,
-                            width - button_delta_x - 1*button_width - button_gap, height - button_delta_y)
-    canvas.create_rectangle(width - button_delta_x - button_width, height - button_delta_y - button_height,
-                            width - button_delta_x, height - button_delta_y)
+
+    xs = [width - button_delta_x - 3*button_width - 2*button_gap,
+         width - button_delta_x - 2*button_width - button_gap,
+         width - button_delta_x - button_width]
+
+    y = height - button_delta_y - button_height
+
+    # can be left out if button images contain the button outline
+    for x in xs:
+        canvas.create_rectangle(x, y, x + button_width, y + button_height)
+
+    for i, type in enumerate([button_type0, button_type1, button_type2]):
+        """
+        y = y
+        get the x position with xs[i]
+        """
+        if type == "back":
+            # draw back button
+            pass
+        elif type == "left":
+            # draw left button
+            pass
+        elif type == "right":
+            # draw right button
+            pass
+        elif type == "replay":
+            # draw replay button
+            pass
+        elif type == "select":
+            # draw OK button
+            pass

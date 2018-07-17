@@ -96,10 +96,19 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, width= 1080, height=720)
         self.controller = controller
-        label = tk.Label(self, text="Ultra Sonic School Game", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+        # label = tk.Label(self, text="Ultra Sonic School Game", font=controller.title_font)
+        # label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
+        # button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
+
+        self.width = self.winfo_screenwidth()
+        self.height = self.winfo_screenheight()
+        self.canvas = Canvas(self, width=self.width, height=self.height)
+        self.canvas.pack()
+
+        self.canvas.create_text(self.width/2, self.height/2, text="Ultra Sonic School Game", fill="darkblue", font="Times 70 italic bold")
+
+        draw_button_info(self.canvas, "select", "select", "select")
 
     def on_button_pressed(self, button_index):
         self.controller.show_frame("Functions")
@@ -164,6 +173,8 @@ class Functions(tk.Frame):
 
         function.set_type("lin")
         function.set_transformations(0, 0.25, 1, 0.5)
+
+        draw_button_info(self.canvas, "left", "select", "right")
         
 
         
@@ -257,7 +268,8 @@ class Type(tk.Frame):
                                      self.width / 2 + button_gap / 2 + button_width, self.height / 2 + button_height / 2, tags="1"))
         self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
                                 font=("Times", 60))
-        draw_button_info(self.canvas, "", "", "")
+
+        draw_button_info(self.canvas, "left", "select", "right")
 
 
     def on_button_pressed(self, button_index):

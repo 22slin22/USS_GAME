@@ -3,10 +3,11 @@ from Axis import *
 from Line import *
 from Functions import Function
 import tkinter as tk
+from Utils import *
 
 
 class Graph(tk.Frame):
-    graph_x_start = 100
+    graph_x_start = 150
     graph_y_start = 100
 
     graph = None
@@ -20,7 +21,6 @@ class Graph(tk.Frame):
 
         self.canvas_width = self.winfo_screenwidth()
         self.canvas_height = self.winfo_screenheight()
-        print("canvas height:", self.canvas_height)
 
         self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
@@ -28,12 +28,14 @@ class Graph(tk.Frame):
         self.bind("<space>", lambda event: self.restart)
 
         self.graph_x_end = self.canvas_width - 100
-        self.graph_y_end = self.canvas_height - 100
+        self.graph_y_end = self.canvas_height - 150
         self.x_span = self.graph_x_end - self.graph_x_start
 
         self.pixels_per_second = (self.graph_x_end - self.graph_x_start) / game.total_time
         self.pixels_per_cm = (self.graph_y_end - self.graph_y_start) / (game.y_max - game.y_min)
         draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end, self.game.y_min, self.game.y_max)
+
+        draw_button_info(self.canvas, "left", "select", "right")
 
     def new_point(self, new_point):
         x = new_point[0] * self.pixels_per_second
@@ -73,6 +75,8 @@ class Graph(tk.Frame):
             self.graph = self.function.return_function_values(self.game.interval)
         draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
                    self.game.total_time, self.game.y_max, self.game.y_min)
+
+        draw_button_info(self.canvas, "back", "replay", "right")
 
     def draw_score(self, score):
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height *1/8, text="Deine Punktzahl ist " + str(score),
