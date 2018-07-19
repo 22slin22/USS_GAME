@@ -15,6 +15,10 @@ class Function:
     squeez_x = 1
     strech_y = 1
 
+    # only for step functions
+    m1 = 0
+    m2 = 0
+
     total_time = 0
     y_min = 0
     y_max = 0
@@ -42,6 +46,8 @@ class Function:
             self.rand_exp_transform()
         elif self.type == "log":
             self.rand_log_transform()
+        elif self.type == "step":
+            self.rand_step_transform()
 
     def rand_lin_transform(self):
         """x transformations aren't used in linear functions"""
@@ -108,12 +114,33 @@ class Function:
             self.squeez_x = random.randint(1, 15)
             y_right = self.evaluate(self.total_time)
 
+    def rand_step_transform(self):
+        self.shift_x = random.randint(self.y_min+PADDING, self.y_max-PADDING)
+        y_middle = random.randint(self.y_min+PADDING, self.y_max-PADDING)
+        y_right = random.randint(self.y_min+PADDING, self.y_max-PADDING)
+        while math.fabs(y_middle - self.shift_x) < MIN_DISTANCE:
+            y_middle = random.randint(self.y_min + PADDING, self.y_max - PADDING)
+        while math.fabs(y_right - y_middle) < MIN_DISTANCE:
+            y_right = random.randint(self.y_min + PADDING, self.y_max - PADDING)
+
+        self.m1 = (y_middle - self.shift_x) / (self.total_time / 3)
+        self.m2 = (y_right - y_middle) / (self.total_time / 3)
+
     def evaluate(self, x):
-        return self.strech_y * functions(self.type, self.squeez_x * x - self.shift_x) + self.shift_y
+        if self.type == "step":
+            if x < self.total_time/3:
+                return self.m1 * x + self.shift_x
+            elif x < self.total_time * 2/3:
+                return self.m1 * (self.total_time/3) + self.shift_x
+            else:
+                return (self.m1 * (self.total_time/3) + self.shift_x) + (self.m2 * (x - self.total_time * 2/3))
+        # with any other function
+        else:
+            return self.strech_y * functions(self.type, self.squeez_x * x - self.shift_x) + self.shift_y
 
     def return_function_values(self, interval):
         line = []
-        for i in range(int(self.total_time / interval) +1):
+        for i in range(int(self.total_time / interval) + 1):
             x = i * interval
             y = self.evaluate(x)
             line.append([x, y])
@@ -125,6 +152,11 @@ class Function:
         self.shift_y = shift_y
         self.squeez_x = squeez_x
         self.strech_y = strech_y
+
+    def set_step_transformations(self, shift_x, m1, m2):
+        self.shift_x = shift_x
+        self.m1 = m1
+        self.m2 = m2
 
     def draw(self, canvas, graph_x_start, graph_y_start, graph_x_end, graph_y_end, interval, width=5):
         line = self.return_function_values(interval)

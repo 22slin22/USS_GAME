@@ -130,7 +130,7 @@ class Functions(tk.Frame):
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
-        self.num_buttons = 5
+        self.num_buttons = 6
         button_width = 200
         button_height = 200
         button_gap = 50
@@ -153,15 +153,18 @@ class Functions(tk.Frame):
                 function.set_type("lin")
                 function.set_transformations(0, 0.25, 1, 0.5)
             elif i == 1:
+                function.set_type("step")
+                function.set_step_transformations(0.25, 3/4, 3/4)
+            elif i == 2:
                 function.set_type("exp")
                 function.set_transformations(0, 0, 5, 0.0234)
-            elif i == 2:
+            elif i == 3:
                 function.set_type("log")
                 function.set_transformations(-1, 0, 30, 0.221)
-            elif i == 3:
+            elif i == 4:
                 function.set_type("quad")
                 function.set_transformations(0.5, 0.25, 1, 2)
-            elif i == 4:
+            elif i == 5:
                 function.set_type("sin")
                 function.set_transformations(0, 0.5, 6.3, 0.3)
 
@@ -220,12 +223,14 @@ class Functions(tk.Frame):
             if self.selected_button == 0:
                 self.game.set_func("lin")
             elif self.selected_button == 1:
-                self.game.set_func("exp")
+                self.game.set_func("step")
             elif self.selected_button == 2:
-                self.game.set_func("log")
+                self.game.set_func("exp")
             elif self.selected_button == 3:
-                self.game.set_func("quad")
+                self.game.set_func("log")
             elif self.selected_button == 4:
+                self.game.set_func("quad")
+            elif self.selected_button == 5:
                 self.game.set_func("sin")
 
         if button_index == 2:
