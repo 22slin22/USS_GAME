@@ -9,6 +9,9 @@ from ButtonListener import ButtonListener
 DISTANCE = 0
 VELOCITY = 1
 
+# time it takes until you get back to the menu screen when doing nothing
+IDLE_TIME_MENU_SCREEN = 120
+
 
 class Game:
     mode = 0
@@ -41,10 +44,9 @@ class Game:
     uss_valid = []
     # stores only points that are drawn
     points = []
+    scores = []
 
     running = False
-
-    scores = []
 
     def __init__(self):
         self.srf = SRF02()
@@ -54,16 +56,23 @@ class Game:
         self.frameManager = Menu.FrameManager(self)
         self.button_listener = ButtonListener(self.frameManager)
 
+        self.idle_time = time.monotonic()
+
         self.run()
 
     def run(self):
         while True:
             if self.running:
                 self.tick()
+                self.idle_time = time.monotonic()
 
             self.button_listener.check_buttons()
             self.frameManager.tick()
             time.sleep(self.waiting_time)
+
+            if time.monotonic() - self.idle_time >= IDLE_TIME_MENU_SCREEN and self.frameManager.current_frame_name is not "StartPage":
+                self.frameManager.show_frame("StartPage")
+
 
     def tick(self):
         if time.monotonic() - self.start_time < self.total_time:

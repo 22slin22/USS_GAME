@@ -40,3 +40,4 @@ class ButtonListener:
 
     def button_pressed(self, button_index):
         self.frame_manager.on_button_pressed(button_index)
+        self.frame_manager.game.idle_time = time.monotonic()
