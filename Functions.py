@@ -1,10 +1,6 @@
 import math
 import random
 
-# Amount on the graph that is left empty on the bottom and on the top
-PADDING = 50
-MIN_DISTANCE = 100
-
 
 class Function:
 
@@ -30,6 +26,10 @@ class Function:
         self.y_span = y_max - y_min
         self.total_time = total_time
 
+        self.min_distance = int(self.y_span / 3)
+        # Amount on the graph that is left empty on the bottom and on the top
+        self.padding = int(self.y_span / 6)
+
     def set_type(self, func_type, rand_transform=False):
         self.type = func_type
         if rand_transform:
@@ -54,11 +54,11 @@ class Function:
         self.squeez_x = 1
         self.shift_x = 0
 
-        y0 = random.randint(self.y_min+PADDING, self.y_max-PADDING)     # y on the left side
-        y1 = random.randint(self.y_min+PADDING, self.y_max-PADDING)     # y on the right side
-        while math.fabs(y1 - y0) < MIN_DISTANCE:
-            y0 = random.randint(self.y_min + PADDING, self.y_max - PADDING)  # y on the left side
-            y1 = random.randint(self.y_min + PADDING, self.y_max - PADDING)  # y on the right side
+        y0 = random.randint(self.y_min+self.padding, self.y_max-self.padding)     # y on the left side
+        y1 = random.randint(self.y_min+self.padding, self.y_max-self.padding)     # y on the right side
+        while math.fabs(y1 - y0) < self.min_distance:
+            y0 = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the left side
+            y1 = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the right side
 
         self.shift_y = y0       # y - intercept
         self.strech_y = (y1 - self.shift_y) / self.total_time       # derives from y = mx + t
@@ -68,19 +68,19 @@ class Function:
         self.shift_x = self.total_time / 2
 
         xv = self.total_time / 2                                        # x coordinate of the vertex is in the middle
-        yv = random.randint(self.y_min+PADDING, self.y_max-PADDING)     # y coordinate of the vertex
-        y0 = random.randint(self.y_min+PADDING, self.y_max-PADDING)     # y on the left side (also on the right side)
-        while math.fabs(yv - y0) < MIN_DISTANCE:
-            yv = random.randint(self.y_min + PADDING, self.y_max - PADDING)  # y on the left side
-            y0 = random.randint(self.y_min + PADDING, self.y_max - PADDING)  # y on the right side
+        yv = random.randint(self.y_min+self.padding, self.y_max-self.padding)     # y coordinate of the vertex
+        y0 = random.randint(self.y_min+self.padding, self.y_max-self.padding)     # y on the left side (also on the right side)
+        while math.fabs(yv - y0) < self.min_distance:
+            yv = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the left side
+            y0 = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the right side
 
         self.strech_y = (y0 - yv) / math.pow(xv, 2)                     # derives from y = a(x-xv)² + yv
         self.shift_y = yv
 
     def rand_sin_transform(self):
-        self.strech_y = random.randint(MIN_DISTANCE / 2, self.y_span / 2 - PADDING)
-        while math.fabs(self.strech_y*2) < MIN_DISTANCE:
-            self.strech_y = random.randint(MIN_DISTANCE/2, self.y_span/2 - PADDING)
+        self.strech_y = random.randint(self.min_distance / 2, self.y_span / 2 - self.padding)
+        while math.fabs(self.strech_y*2) < self.min_distance:
+            self.strech_y = random.randint(self.min_distance/2, self.y_span/2 - self.padding)
 
         self.shift_x = random.randint(0, self.total_time)      # shift any amount (sin is cyclic)
         self.shift_y = (self.y_min + self.y_max) / 2                      # in the middle
@@ -90,38 +90,38 @@ class Function:
 
     def rand_exp_transform(self):
         self.shift_x = 0
-        self.shift_y = self.y_min + PADDING      # not random to get a reasonable graph
+        self.shift_y = self.y_min + self.padding      # not random to get a reasonable graph
 
         self.squeez_x = random.random()     # so small to fit the plot on the graph
         self.strech_y = random.random()
 
         y_right = self.evaluate(self.total_time)
-        while not (self.y_min + PADDING < int(y_right) < self.y_max - PADDING and y_right - self.shift_y > MIN_DISTANCE):
+        while not (self.y_min + self.padding < int(y_right) < self.y_max - self.padding and y_right - self.shift_y > self.min_distance):
             self.squeez_x = random.random()
             self.strech_y = random.random()
             y_right = self.evaluate(self.total_time)
 
     def rand_log_transform(self):
         self.shift_x = -1       # so no infinite values
-        self.shift_y = self.y_min + PADDING     # to fit graph
+        self.shift_y = self.y_min + self.padding     # to fit graph
 
         self.strech_y = random.randint(1, 100)
         self.squeez_x = random.randint(1, 15)
 
         y_right = self.evaluate(self.total_time)
-        while not (self.y_min + PADDING < int(y_right) < self.y_max - PADDING and y_right - self.shift_y > MIN_DISTANCE):
+        while not (self.y_min + self.padding < int(y_right) < self.y_max - self.padding and y_right - self.shift_y > self.min_distance):
             self.strech_y = random.randint(1, 100)
             self.squeez_x = random.randint(1, 15)
             y_right = self.evaluate(self.total_time)
 
     def rand_step_transform(self):
-        self.shift_x = random.randint(self.y_min+PADDING, self.y_max-PADDING)
-        y_middle = random.randint(self.y_min+PADDING, self.y_max-PADDING)
-        y_right = random.randint(self.y_min+PADDING, self.y_max-PADDING)
-        while math.fabs(y_middle - self.shift_x) < MIN_DISTANCE:
-            y_middle = random.randint(self.y_min + PADDING, self.y_max - PADDING)
-        while math.fabs(y_right - y_middle) < MIN_DISTANCE:
-            y_right = random.randint(self.y_min + PADDING, self.y_max - PADDING)
+        self.shift_x = random.randint(self.y_min+self.padding, self.y_max-self.padding)
+        y_middle = random.randint(self.y_min+self.padding, self.y_max-self.padding)
+        y_right = random.randint(self.y_min+self.padding, self.y_max-self.padding)
+        while math.fabs(y_middle - self.shift_x) < self.min_distance:
+            y_middle = random.randint(self.y_min + self.padding, self.y_max - self.padding)
+        while math.fabs(y_right - y_middle) < self.min_distance:
+            y_right = random.randint(self.y_min + self.padding, self.y_max - self.padding)
 
         self.m1 = (y_middle - self.shift_x) / (self.total_time / 3)
         self.m2 = (y_right - y_middle) / (self.total_time / 3)

@@ -32,7 +32,7 @@ class Game:
     points_not_drawn = 0
 
     start_up_time = 3
-    waiting_time = 0.005
+    waiting_time = 0.01
     show_countdown = True
 
     # stores every single point measured
@@ -47,23 +47,26 @@ class Game:
     scores = []
 
     def __init__(self):
-
-        # self.graph = Graph(self)
         self.srf = SRF02()
-
-        # self.start_time = time.monotonic() + self.start_up_time
-        # self.run()
 
         self.func = None
 
         self.frameManager = Menu.FrameManager(self)
         self.button_listener = ButtonListener(self.frameManager)
 
-        # self.frameManager.mainloop()
-        self.frameManager.run()
+        self.run()
 
     def run(self):
-        while self.running and time.monotonic() - self.start_time < self.total_time:
+        while True:
+            if self.running:
+                self.tick()
+
+            self.button_listener.check_buttons()
+            self.frameManager.tick()
+            time.sleep(self.waiting_time)
+
+    def tick(self):
+        if time.monotonic() - self.start_time < self.total_time:
             if self.mode == DISTANCE:
                 x, y = self.get_distance()
 
@@ -89,7 +92,8 @@ class Game:
                     self.uss_valid.append([x, y])
                     self.points_not_drawn = 0
                     if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
+                            x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -97,7 +101,8 @@ class Game:
                     self.add_points_not_drawn(velocity=True)
                     self.uss_valid.append([x, y])
                     if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
+                            x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -107,16 +112,14 @@ class Game:
 
                 self.countdown()
 
-            self.button_listener.check_buttons()
-            time.sleep(self.waiting_time)
-
-        # if the game was finished
-        if self.running:
-            loss = self.calculate_loss()
-            self.scores.append(int(1000 / loss))
-            print(loss, self.scores[-1])
-            self.graph.draw_score(self.scores[-1])
-        self.running = False
+        else:
+            # if the game was finished
+            if self.running:
+                loss = self.calculate_loss()
+                self.scores.append(int(1000 / loss))
+                print(loss, self.scores[-1])
+                self.graph.draw_score(self.scores[-1])
+            self.running = False
 
     def get_distance(self):
         y = self.srf.distance()
@@ -168,15 +171,31 @@ class Game:
             if len(self.points) > 0:
                 self.graph.draw_start_point(self.points[-1][1])
 
-    def restart(self):
+    def start(self):
+        self.frameManager.show_frame("Graph")
+
+        # if the scale of the graph has changed
+        self.graph.reset(draw_function=False)
+        self.graph.add_function(self.func, self.interval)
+
+        self.scores.clear()
         self.start_time = time.monotonic() + self.start_up_time
+        self.running = True
+
+    def restart(self, randomize_function=False):
+        self.reset()
+        if randomize_function:
+            self.scores.clear()
+        self.graph.reset(randomize_function)
+
+        self.start_time = time.monotonic() + self.start_up_time
+        self.running = True
+
+    def reset(self):
         self.uss.clear()
         self.points.clear()
-        self.scores.clear()
         self.show_countdown = True
-        if not self.running:
-            self.running = True
-            self.run()
+        self.running = False
 
     def calculate_loss(self):
         loss = 0
@@ -188,14 +207,6 @@ class Game:
 
         loss = loss / len(self.points)
         return loss
-
-    def start(self):
-        self.frameManager.show_frame("Graph")
-
-        self.graph.add_function(self.func, self.interval)
-        self.graph.reset()
-        self.restart()
-        # self.run()
 
     def countdown(self):
         if time.monotonic() > self.start_time and self.show_countdown:

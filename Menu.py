@@ -64,24 +64,8 @@ class FrameManager(tk.Tk):
         frame.tkraise()
         frame.focus_set()
 
-    def toggle_geom(self, event):
-        geom = self.winfo_geometry()
-        self.geometry(self._geom)
-        self._geom = geom
-        self.overrideredirect(False)
-
-    def close(self, event=None):
-        print("escaped")
-        self.destroy()
-
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
-
-    def run(self):
-        while True:
-            if self.button_listener is not None:
-                self.button_listener.check_buttons()
-            self.tick()
 
     def tick(self):
         self.update_idletasks()
@@ -275,7 +259,6 @@ class Type(tk.Frame):
                                 font=("Times", 60))
 
         draw_button_info(self.canvas, "left", "select", "right")
-
 
     def on_button_pressed(self, button_index):
         if button_index == 0:

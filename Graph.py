@@ -25,8 +25,6 @@ class Graph(tk.Frame):
         self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
 
-        self.bind("<space>", lambda event: self.restart)
-
         self.graph_x_end = self.canvas_width - 100
         self.graph_y_end = self.canvas_height - 150
         self.x_span = self.graph_x_end - self.graph_x_start
@@ -42,8 +40,6 @@ class Graph(tk.Frame):
         y = (new_point[1] - self.game.y_min) * self.pixels_per_cm
         draw_new_point(self.canvas, [x, y], self.graph_x_start, self.graph_y_end)
 
-        self.refresh()
-
     def draw_start_point(self, y):
         x = self.graph_x_start
         y = (self.graph_y_end - (y * self.pixels_per_cm))
@@ -51,17 +47,7 @@ class Graph(tk.Frame):
         self.canvas.delete('start_point')
         self.canvas.create_oval(x-5, y-5, x+5, y+5, fill="red", tags='start_point')
 
-        self.refresh()
-
-    def refresh(self):
-        self.controller.update_idletasks()
-        self.controller.update()
-
-    def restart(self, randomize_function=False):
-        self.reset(randomize_function)
-        self.game.restart()
-
-    def reset(self, randomize_function=False):
+    def reset(self, randomize_function=False, draw_function=True):
         clear_points()
 
         self.canvas.delete("all")
@@ -70,13 +56,14 @@ class Graph(tk.Frame):
         self.pixels_per_cm = (self.graph_y_end - self.graph_y_start) / (self.game.y_max - self.game.y_min)
         draw_axis(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end,
                   self.game.y_min, self.game.y_max)
-        if randomize_function:
-            self.function.randomize_transformation()
-            self.graph = self.function.return_function_values(self.game.interval)
-        draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
-                   self.game.total_time, self.game.y_max, self.game.y_min)
-
         draw_button_info(self.canvas, "back", "replay", "right")
+
+        if draw_function:
+            if randomize_function:
+                self.function.randomize_transformation()
+                self.graph = self.function.return_function_values(self.game.interval)
+            draw_graph(self.canvas, self.graph, self.graph_x_start, self.graph_x_end, self.graph_y_start, self.graph_y_end,
+                       self.game.total_time, self.game.y_max, self.game.y_min)
 
     def draw_score(self, score):
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height *1/8, text="Deine Punktzahl ist " + str(score),
@@ -102,11 +89,9 @@ class Graph(tk.Frame):
 
     def on_button_pressed(self, button_index):
         if button_index == 0:
-            self.game.running = False
+            self.game.reset()
             self.controller.show_frame("Functions")
-            self.game.scores = []
         if button_index == 1:
-            self.restart()
+            self.game.restart()
         if button_index == 2:
-            self.restart(randomize_function=True)
-            self.game.scores = []
+            self.game.restart(randomize_function=True)
