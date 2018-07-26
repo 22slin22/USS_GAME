@@ -115,9 +115,9 @@ class Functions(tk.Frame):
         self.canvas.pack()
 
         self.num_buttons = 6
-        button_width = 200
-        button_height = 200
-        button_gap = 50
+        button_width = 150
+        button_height = 150
+        button_gap = 25
         
         self.buttons = []
         function = Function()
