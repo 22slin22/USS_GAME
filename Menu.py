@@ -92,6 +92,10 @@ class StartPage(tk.Frame):
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
+
+        # self.img1 = PhotoImage(file='Back_Arrow.png')
+        # self.canvas.create_image(50, 50, image=self.img1)
+
         self.canvas.create_text(self.width/2, self.height/2, text="Ultra Sonic School Game", fill="darkblue", font="Times 70 italic bold")
 
         draw_button_info(self.canvas, "select", "select", "select")

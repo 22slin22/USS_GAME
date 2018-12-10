@@ -12,9 +12,11 @@ imgs = {}
 
 
 def button_info_init():
-    print('buttons info init')
-    imgs["back"] = PhotoImage(file="Back_Arrow.png")
-    print(imgs)
+    imgs["back"] = PhotoImage(file="Images/Back.png")
+    imgs["left"] = PhotoImage(file="Images/Left.png")
+    imgs["right"] = PhotoImage(file="Images/Right.png")
+    imgs["replay"] = PhotoImage(file="Images/Replay.png")
+    imgs["select"] = PhotoImage(file="Images/Select.png")
 
 
 def draw_button_info(canvas, button_type0, button_type1, button_type2):
@@ -41,13 +43,13 @@ def draw_button_info(canvas, button_type0, button_type1, button_type2):
             canvas.create_image(xs[i], y, anchor=NW, image=imgs["back"])
         elif type == "left":
             # draw left button
-            pass
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["left"])
         elif type == "right":
             # draw right button
-            pass
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["right"])
         elif type == "replay":
             # draw replay button
-            pass
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["replay"])
         elif type == "select":
             # draw OK button
-            pass
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["select"])
