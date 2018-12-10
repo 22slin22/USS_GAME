@@ -1,3 +1,5 @@
+from tkinter import *
+
 button_width = 70
 button_height = 70
 
@@ -5,6 +7,14 @@ button_delta_y = 40
 button_delta_x = 40
 
 button_gap = 20
+
+imgs = {}
+
+
+def button_info_init():
+    print('buttons info init')
+    imgs["back"] = PhotoImage(file="Back_Arrow.png")
+    print(imgs)
 
 
 def draw_button_info(canvas, button_type0, button_type1, button_type2):
@@ -28,7 +38,7 @@ def draw_button_info(canvas, button_type0, button_type1, button_type2):
         """
         if type == "back":
             # draw back button
-            pass
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["back"])
         elif type == "left":
             # draw left button
             pass

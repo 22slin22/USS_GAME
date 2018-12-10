@@ -26,6 +26,8 @@ class FrameManager(tk.Tk):
 
         self.game = game
 
+        button_info_init()
+
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         # the container is where we'll stack a bunch of frames
