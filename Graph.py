@@ -1,9 +1,9 @@
-from tkinter import *
-from Axis import *
-from Line import *
-from Functions import Function
 import tkinter as tk
+from Axis import *
+from Functions import Function
+from Line import *
 from Utils import *
+from tkinter import *
 
 
 class Graph(tk.Frame):

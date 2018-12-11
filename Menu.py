@@ -7,7 +7,6 @@ from Functions import Function
 
 
 class FrameManager(tk.Tk):
-
     current_frame_name = None
     button_listener = None
 
@@ -80,7 +79,7 @@ class FrameManager(tk.Tk):
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, width= 1080, height=720)
+        tk.Frame.__init__(self, parent, width=1080, height=720)
         self.controller = controller
         # label = tk.Label(self, text="Ultra Sonic School Game", font=controller.title_font)
         # label.pack(side="top", fill="x", pady=10)
@@ -92,11 +91,11 @@ class StartPage(tk.Frame):
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
-
         # self.img1 = PhotoImage(file='Back_Arrow.png')
         # self.canvas.create_image(50, 50, image=self.img1)
 
-        self.canvas.create_text(self.width/2, self.height/2, text="Ultra Sonic School Game", fill="darkblue", font="Times 70 italic bold")
+        self.canvas.create_text(self.width / 2, self.height / 2, text="Ultra Sonic School Game", fill="darkblue",
+                                font="Times 70 italic bold")
 
         draw_button_info(self.canvas, "select", "select", "select")
 
@@ -105,7 +104,6 @@ class StartPage(tk.Frame):
 
 
 class Functions(tk.Frame):
-
     selected_button = 0
 
     def __init__(self, parent, controller, game):
@@ -132,7 +130,7 @@ class Functions(tk.Frame):
         '''button_width = 150
         button_height = 150
         button_gap = 25'''
-        
+
         self.buttons = []
         function = Function()
         function.set_scale(y_min=0, y_max=1, total_time=1)
@@ -140,11 +138,13 @@ class Functions(tk.Frame):
         for i in range(self.num_buttons):
             # (button_width*num_buttons + button_gap*(num_buttons-1))/2 to get the left most coordiante
             # i(button_width + button_gap)  to get the current x coordinate
-            x1 = self.width/2 - (button_width*self.num_buttons + button_gap*(self.num_buttons-1))/2 + i*(button_width + button_gap)
-            y1 = self.height/2 - button_height/2
-            x2 = self.width/2 - (button_width*self.num_buttons + button_gap*(self.num_buttons-1))/2 + (i+1)*button_width + i*button_gap
-            y2 = self.height/2 + button_height/2
-            
+            x1 = self.width / 2 - (button_width * self.num_buttons + button_gap * (self.num_buttons - 1)) / 2 + i * (
+                    button_width + button_gap)
+            y1 = self.height / 2 - button_height / 2
+            x2 = self.width / 2 - (button_width * self.num_buttons + button_gap * (self.num_buttons - 1)) / 2 + (
+                    i + 1) * button_width + i * button_gap
+            y2 = self.height / 2 + button_height / 2
+
             self.buttons.append(self.canvas.create_rectangle(x1, y1, x2, y2, fill="white"))
 
             if i == 0:
@@ -152,7 +152,7 @@ class Functions(tk.Frame):
                 function.set_transformations(0, 0.25, 1, 0.5)
             elif i == 1:
                 function.set_type("step")
-                function.set_step_transformations(0.25, 3/4, 3/4)
+                function.set_step_transformations(0.25, 3 / 4, 3 / 4)
             elif i == 2:
                 function.set_type("exp")
                 function.set_transformations(0, 0, 5, 0.0234)
@@ -176,13 +176,14 @@ class Functions(tk.Frame):
 
         draw_button_info(self.canvas, "left", "select", "right")
 
-
     def on_button_pressed(self, button_index):
         if button_index == 0:
-            if self.selected_button > 0:
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
-                self.selected_button -= 1
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+            self.selected_button -= 1
+            if self.selected_button < 0:
+                self.selected_button = self.num_buttons - 1
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+
         if button_index == 1:
             if self.selected_button == 0:
                 self.game.set_func("lin")
@@ -198,14 +199,15 @@ class Functions(tk.Frame):
                 self.game.set_func("sin")
 
         if button_index == 2:
-            if self.selected_button < self.num_buttons-1:
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
-                self.selected_button += 1
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+            self.selected_button += 1
+            if self.selected_button > self.num_buttons - 1:
+                self.selected_button = 0
+
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
 
 
 class Type(tk.Frame):
-
     selected_button = 0
 
     def __init__(self, parent, controller):
@@ -222,24 +224,25 @@ class Type(tk.Frame):
         button_gap = 50
         """left button (t/x)"""
         self.buttons = []
-        self.buttons.append(self.canvas.create_rectangle(self.width/2 - button_gap/2 - button_width, self.height/2 - button_height/2,
-                                     self.width/2 - button_gap/2, self.height/2 + button_height/2, fill="orange", tags="0"))
-        self.canvas.create_text(self.width/2 - button_gap/2 - button_width/2, self.height/2, text="t-x",
+        self.buttons.append(self.canvas.create_rectangle(self.width / 2 - button_gap / 2 - button_width,
+                                                         self.height / 2 - button_height / 2,
+                                                         self.width / 2 - button_gap / 2,
+                                                         self.height / 2 + button_height / 2, fill="orange", tags="0"))
+        self.canvas.create_text(self.width / 2 - button_gap / 2 - button_width / 2, self.height / 2, text="t-x",
                                 font=("Times", 60))
         """right button (t/v)"""
-        self.buttons.append(self.canvas.create_rectangle(self.width / 2 + button_gap / 2, self.height / 2 - button_height / 2,
-                                     self.width / 2 + button_gap / 2 + button_width, self.height / 2 + button_height / 2, tags="1"))
+        self.buttons.append(
+            self.canvas.create_rectangle(self.width / 2 + button_gap / 2, self.height / 2 - button_height / 2,
+                                         self.width / 2 + button_gap / 2 + button_width,
+                                         self.height / 2 + button_height / 2, tags="1"))
         self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
                                 font=("Times", 60))
 
-        draw_button_info(self.canvas, "left", "select", "right")
+        draw_button_info(self.canvas, "back", "select", "switch")
 
     def on_button_pressed(self, button_index):
         if button_index == 0:
-            if self.selected_button > 0:
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
-                self.selected_button -= 1
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+            self.controller.show_frame("Functions")
         if button_index == 1:
             if self.selected_button == 0:
                 self.controller.game.y_min = 0
@@ -251,7 +254,9 @@ class Type(tk.Frame):
             self.controller.game.start()
 
         if button_index == 2:
-            if self.selected_button < 1:
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
-                self.selected_button += 1
-                self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+            self.selected_button += 1
+            if self.selected_button > 1:
+                self.selected_button = 0
+
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")

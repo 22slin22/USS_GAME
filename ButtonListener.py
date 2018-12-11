@@ -1,14 +1,14 @@
-#from RPi import GPIO
+# from RPi import GPIO
 import time
 
 buttons = [11, 12, 13]
 
 
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setwarnings(False)
+# GPIO.setmode(GPIO.BOARD)
+# GPIO.setwarnings(False)
 
 
-#for button in buttons:
+# for button in buttons:
 #    GPIO.setup(button, GPIO.IN)
 
 

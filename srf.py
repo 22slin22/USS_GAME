@@ -1,14 +1,13 @@
-#import smbus
-import time
+# import smbus
 import random
+import time
 
 
 class SRF02:
-    #def __init__(self):
+    # def __init__(self):
     #
     #    self.i2c = smbus.SMBus(1)
     #    self.addr = 0x70
-        
 
     def distance(self):
         """ read the data in inches, so the uss has a bigger range due to not overflowing so fast """
@@ -18,5 +17,5 @@ class SRF02:
         dist = self.i2c.read_word_data(self.addr, 2) / 255
         return dist * 2.54
         """
-        #return round(random.uniform(50, 250), 2)
+        # return round(random.uniform(50, 250), 2)
         return 100

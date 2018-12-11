@@ -1,6 +1,6 @@
+import Game
 import pickle
 import time
-import Game
 
 
 def date():
@@ -42,6 +42,7 @@ def new_highscore(highscore, date):
 user_name = "Pika"
 user_score = 8700
 user_date = date()
+
 
 def load_highscores():
     with open("highscore.txt", "rb") as highscorefile:

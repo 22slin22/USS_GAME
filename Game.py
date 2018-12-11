@@ -1,10 +1,10 @@
-from Graph import Graph
 import Menu
-import tkinter as tk
-from Functions import *
-from srf import SRF02
 import time
+import tkinter as tk
 from ButtonListener import ButtonListener
+from Functions import *
+from Graph import Graph
+from srf import SRF02
 
 DISTANCE = 0
 VELOCITY = 1
@@ -73,7 +73,6 @@ class Game:
             if time.monotonic() - self.idle_time >= IDLE_TIME_MENU_SCREEN and self.frameManager.current_frame_name is not "StartPage":
                 self.frameManager.show_frame("StartPage")
 
-
     def tick(self):
         if time.monotonic() - self.start_time < self.total_time:
             if self.mode == DISTANCE:
@@ -102,7 +101,7 @@ class Game:
                     self.points_not_drawn = 0
                     if len(self.uss_valid) > self.velocity_average:
                         v = (y - self.uss_valid[-self.velocity_average][1]) / (
-                            x - self.uss_valid[-self.velocity_average][0])
+                                x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -111,7 +110,7 @@ class Game:
                     self.uss_valid.append([x, y])
                     if len(self.uss_valid) > self.velocity_average:
                         v = (y - self.uss_valid[-self.velocity_average][1]) / (
-                            x - self.uss_valid[-self.velocity_average][0])
+                                x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -151,9 +150,9 @@ class Game:
 
     # adds the last points that were not drawn
     def add_points_not_drawn(self, velocity=False):
-        for i in range(self.spike_override-1):          # -1 because the new point has not been added yet
-            x = self.uss[-(self.spike_override-1-i)][0]
-            y = self.uss[-(self.spike_override-1-i)][1]
+        for i in range(self.spike_override - 1):  # -1 because the new point has not been added yet
+            x = self.uss[-(self.spike_override - 1 - i)][0]
+            y = self.uss[-(self.spike_override - 1 - i)][1]
             if not velocity:
                 self.graph.new_point([x, y])
                 self.points.append([x, y])
@@ -169,7 +168,7 @@ class Game:
                 return False
             # tests if the last points not all lay on one line
             for i in range(self.spike_override - 1):
-                if not (math.fabs(self.uss[-i-1][1] - self.uss[-i-2][1]) < self.spike_delta_y):
+                if not (math.fabs(self.uss[-i - 1][1] - self.uss[-i - 2][1]) < self.spike_delta_y):
                     return False
             return True
         return False
@@ -233,6 +232,7 @@ class Game:
     def set_func(self, func):
         self.func = func
         self.frameManager.show_frame("Type")
+
 
 if __name__ == '__main__':
     game = Game()

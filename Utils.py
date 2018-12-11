@@ -17,15 +17,16 @@ def button_info_init():
     imgs["right"] = PhotoImage(file="Images/Right.png")
     imgs["replay"] = PhotoImage(file="Images/Replay.png")
     imgs["select"] = PhotoImage(file="Images/Select.png")
+    imgs["switch"] = PhotoImage(file="Images/Switch.png")
 
 
 def draw_button_info(canvas, button_type0, button_type1, button_type2):
     width = canvas.winfo_screenwidth()
     height = canvas.winfo_screenheight()
 
-    xs = [width - button_delta_x - 3*button_width - 2*button_gap,
-         width - button_delta_x - 2*button_width - button_gap,
-         width - button_delta_x - button_width]
+    xs = [width - button_delta_x - 3 * button_width - 2 * button_gap,
+          width - button_delta_x - 2 * button_width - button_gap,
+          width - button_delta_x - button_width]
 
     y = height - button_delta_y - button_height
 
@@ -53,3 +54,6 @@ def draw_button_info(canvas, button_type0, button_type1, button_type2):
         elif type == "select":
             # draw OK button
             canvas.create_image(xs[i], y, anchor=NW, image=imgs["select"])
+        elif type == "switch":
+            # draw Switch button
+            canvas.create_image(xs[i], y, anchor=NW, image=imgs["switch"])
