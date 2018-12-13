@@ -1,26 +1,24 @@
 import tkinter as tk
-from tkinter import *
-from tkinter import font as tkfont
+from Functions import Function
 from Graph import Graph
 from Utils import *
-from Functions import Function
+from tkinter import *
+from tkinter import font as tkfont
 
 
 class FrameManager(tk.Tk):
+    # Manages the different windows
     current_frame_name = None
     button_listener = None
 
     def __init__(self, game, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        # self.pad = 3
-        self._geom = '1000x800+0+0'
-        self.geometry("{0}x{1}+0+0".format(self.winfo_screenwidth(), self.winfo_screenheight()))
 
-        self.overrideredirect(True)
-        self.overrideredirect(False)
+        # Fullscreen
         self.attributes("-fullscreen", True)
         self.wm_attributes("-topmost", 1)
-        # self.bind('<Escape>', self.toggle_geom)
+
+        # kill program when <escape> pressed
         self.bind('<Escape>', lambda event: self.destroy())
 
         self.game = game
@@ -38,6 +36,7 @@ class FrameManager(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
+        # adds pages to the container
         for F in (StartPage, Type):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -59,7 +58,7 @@ class FrameManager(tk.Tk):
         self.show_frame("StartPage")
 
     def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
+        # Show a frame for the given page name
         self.current_frame_name = page_name
         frame = self.frames[page_name]
         frame.tkraise()
@@ -68,32 +67,30 @@ class FrameManager(tk.Tk):
     def on_button_pressed(self, button_index):
         self.frames[self.current_frame_name].on_button_pressed(button_index)
 
+    # ticks the windows
     def tick(self):
         self.update_idletasks()
         self.update()
 
+    # adds the button listener to the frames
     def add_button_listener(self, button_listener):
         self.button_listener = button_listener
 
 
 class StartPage(tk.Frame):
+    # Start/Idle Page
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, width=1080, height=720)
         self.controller = controller
-        # label = tk.Label(self, text="Ultra Sonic School Game", font=controller.title_font)
-        # label.pack(side="top", fill="x", pady=10)
 
-        # button1 = tk.Button(self, text="Functions", command=lambda: controller.show_frame("Functions")).pack()
-
+        # get screen information for scaling + setting up canvas
         self.width = self.winfo_screenwidth()
         self.height = self.winfo_screenheight()
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
-        # self.img1 = PhotoImage(file='Back_Arrow.png')
-        # self.canvas.create_image(50, 50, image=self.img1)
-
+        # Title
         self.canvas.create_text(self.width / 2, self.height / 2, text="Ultra Sonic School Game", fill="darkblue",
                                 font="Times 70 italic bold")
 
@@ -104,15 +101,14 @@ class StartPage(tk.Frame):
 
 
 class Functions(tk.Frame):
+    # Select the function Menu
     selected_button = 0
 
     def __init__(self, parent, controller, game):
         self.game = game
         tk.Frame.__init__(self, parent)
-        # self.controller = controller
-        # label = tk.Label(self, text="Funktionstypen", font=controller.title_font)
-        # label.grid(row=0, column=1)
 
+        # get screen information for scaling + setting up canvas
         self.width = self.winfo_screenwidth()
         self.height = self.winfo_screenheight()
         self.canvas = Canvas(self, width=self.width, height=self.height)
@@ -126,10 +122,6 @@ class Functions(tk.Frame):
         button_width = self.width / ((self.num_buttons + 2) + (self.num_buttons + 1) / 4)
         button_height = button_width
         button_gap = button_width / 4
-
-        '''button_width = 150
-        button_height = 150
-        button_gap = 25'''
 
         self.buttons = []
         function = Function()
@@ -147,6 +139,7 @@ class Functions(tk.Frame):
 
             self.buttons.append(self.canvas.create_rectangle(x1, y1, x2, y2, fill="white"))
 
+            # sets the right function that is displayed inside the menu
             if i == 0:
                 function.set_type("lin")
                 function.set_transformations(0, 0.25, 1, 0.5)
@@ -177,14 +170,18 @@ class Functions(tk.Frame):
         draw_button_info(self.canvas, "left", "select", "right")
 
     def on_button_pressed(self, button_index):
+        # color current button white -> select new button -> color current button orange -> repeat
         if button_index == 0:
+            # go one button left
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
             self.selected_button -= 1
+            # goes to rightest button if leftest button is selected
             if self.selected_button < 0:
                 self.selected_button = self.num_buttons - 1
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
 
         if button_index == 1:
+            # sets function when <ok> pressed
             if self.selected_button == 0:
                 self.game.set_func("lin")
             elif self.selected_button == 1:
@@ -199,8 +196,10 @@ class Functions(tk.Frame):
                 self.game.set_func("sin")
 
         if button_index == 2:
+            # go one button right
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
             self.selected_button += 1
+            # go to leftest button if last rightest is selected
             if self.selected_button > self.num_buttons - 1:
                 self.selected_button = 0
 
@@ -208,21 +207,25 @@ class Functions(tk.Frame):
 
 
 class Type(tk.Frame):
+    # Select whether to play tv or tx
     selected_button = 0
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        # get screen information for scaling + setting up canvas
         self.width = self.winfo_screenwidth()
         self.height = self.winfo_screenheight()
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
+        # Button dimensions
         button_width = 300
         button_height = 300
         button_gap = 50
-        """left button (t/x)"""
+
+        # left button (t/x)
         self.buttons = []
         self.buttons.append(self.canvas.create_rectangle(self.width / 2 - button_gap / 2 - button_width,
                                                          self.height / 2 - button_height / 2,
@@ -230,7 +233,8 @@ class Type(tk.Frame):
                                                          self.height / 2 + button_height / 2, fill="orange", tags="0"))
         self.canvas.create_text(self.width / 2 - button_gap / 2 - button_width / 2, self.height / 2, text="t-x",
                                 font=("Times", 60))
-        """right button (t/v)"""
+
+        # right button (t/v)
         self.buttons.append(
             self.canvas.create_rectangle(self.width / 2 + button_gap / 2, self.height / 2 - button_height / 2,
                                          self.width / 2 + button_gap / 2 + button_width,
@@ -241,9 +245,12 @@ class Type(tk.Frame):
         draw_button_info(self.canvas, "back", "select", "switch")
 
     def on_button_pressed(self, button_index):
+        # color current button white -> select new button -> color current button orange -> repeat
         if button_index == 0:
+            # go back
             self.controller.show_frame("Functions")
         if button_index == 1:
+            # select
             if self.selected_button == 0:
                 self.controller.game.y_min = 0
                 self.controller.game.y_max = 300
@@ -254,6 +261,7 @@ class Type(tk.Frame):
             self.controller.game.start()
 
         if button_index == 2:
+            # switch buttons tx/tv
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
             self.selected_button += 1
             if self.selected_button > 1:
