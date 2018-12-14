@@ -12,9 +12,6 @@ def date():
 
 
 Highscores = []
-
-highscore = Game().get_score()
-
 Top_10 = []
 
 
@@ -37,11 +34,6 @@ def new_highscore(highscore, date):
     Highscores.append(locallist)
     Top_10.append(locallist)
     return remove_lowest_score()
-
-
-user_name = "Pika"
-user_score = 8700
-user_date = date()
 
 
 def load_highscores():

@@ -105,7 +105,8 @@ class Game:
                     self.uss_valid.append([x, y])
                     self.points_not_drawn = 0
                     if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
+                                    x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -113,7 +114,8 @@ class Game:
                     self.add_points_not_drawn(velocity=True)
                     self.uss_valid.append([x, y])
                     if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (x - self.uss_valid[-self.velocity_average][0])
+                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
+                                    x - self.uss_valid[-self.velocity_average][0])
                         self.graph.new_point([x, v])
                         self.points.append([x, v])
 
@@ -155,7 +157,7 @@ class Game:
 
     def add_points_not_drawn(self, velocity=False):
         """adds the last points that were not drawn"""
-        for i in range(self.spike_override - 1):    # -1 because the new point has not been added yet
+        for i in range(self.spike_override - 1):  # -1 because the new point has not been added yet
             x = self.uss[-(self.spike_override - 1 - i)][0]
             y = self.uss[-(self.spike_override - 1 - i)][1]
             if not velocity:
