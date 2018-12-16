@@ -32,10 +32,10 @@ class Game:
     points_not_drawn = 0
 
     # number of data points that are average to the velocity
-    velocity_average = 5
+    velocity_average = 20
 
     # time until the game really starts
-    start_up_time = 3
+    start_up_time = 5
     # idle time between each tick
     waiting_time = 0.01
     show_countdown = True
@@ -111,7 +111,7 @@ class Game:
                         self.points.append([x, v])
 
                 elif self.check_override(y):
-                    self.add_points_not_drawn(velocity=True)
+                    self.add_points_not_drawn()
                     self.uss_valid.append([x, y])
                     if len(self.uss_valid) > self.velocity_average:
                         v = (y - self.uss_valid[-self.velocity_average][1]) / (
@@ -138,7 +138,7 @@ class Game:
 
     def get_distance(self):
         y = self.srf.distance()
-        while y < 5 or y > self.y_max:
+        while y < 5: # or y > self.y_max:
             y = self.srf.distance()
             time.sleep(0.04)
 
@@ -155,15 +155,15 @@ class Game:
                 return True
         return False
 
-    def add_points_not_drawn(self, velocity=False):
+    def add_points_not_drawn(self):
         """adds the last points that were not drawn"""
         for i in range(self.spike_override - 1):  # -1 because the new point has not been added yet
             x = self.uss[-(self.spike_override - 1 - i)][0]
             y = self.uss[-(self.spike_override - 1 - i)][1]
-            if not velocity:
+            if self.mode == DISTANCE:
                 self.graph.new_point([x, y])
                 self.points.append([x, y])
-            else:
+            elif self.mode == VELOCITY:
                 self.uss_valid.append([x, y])
         self.points_not_drawn = 0
 

@@ -67,19 +67,19 @@ class Graph(tk.Frame):
                                self.game.interval, width=3, color="black")
 
     def draw_score(self, score):
-        self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1/8, text="Deine Punktzahl ist " + str(score),
+        self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1/8, text="Your score is " + str(score),
                                 font=("Times", 70))
-        self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1/4, text="Alle Punktzahlen: ",
+        self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1/4, text="All scores: ",
                                 font=("Times", 50))
         for i, score in enumerate(self.game.scores):
             self.canvas.create_text(self.canvas_width / 2, self.canvas_height * 1 / 3 + 50*i,
-                                    text=str(i + 1) + ". Spieler " + str(score),
+                                    text=str(i + 1) + ". player " + str(score),
                                     font=("Times", 30))
 
     def draw_countdown(self, seconds):
         self.canvas.delete("countdown")
         self.canvas.create_text(self.canvas_width / 2, self.canvas_height / 2, text=str(seconds),
-                                font=("Times", 80), tags="countdown")
+                                font=("Times", 80), tags="countdown", fill="darkblue")
 
     def add_function(self, func):
         self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
