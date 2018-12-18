@@ -31,8 +31,10 @@ class Game:
     # number of points, that have not been drawn since the last drawn one
     points_not_drawn = 0
 
+    # number of data points that are average to get the position
+    average_position = 5
     # number of data points that are average to the velocity
-    velocity_average = 20
+    average_velocity = 20
 
     # time until the game really starts
     start_up_time = 5
@@ -42,7 +44,7 @@ class Game:
 
     # stores every single point measured
     uss = []
-    # stores all valid points (only used while t-v is active)
+    # stores all valid points (points that are not filtered out)
     uss_valid = []
     # stores only points that are drawn
     points = []
@@ -83,13 +85,16 @@ class Game:
                 x, y = self.get_distance()
 
                 if self.filter_point(y):
-                    self.graph.new_point([x, y])
-                    self.points.append([x, y])
-                    self.points_not_drawn = 0
+                    if self.filter_point(y):
+                        self.uss_valid.append([x, y])
+                        self.points_not_drawn = 0
+                        self.add_position_point()
+
                 elif self.check_override(y):
                     self.add_points_not_drawn()
-                    self.graph.new_point([x, y])
-                    self.points.append([x, y])
+                    self.uss_valid.append([x, y])
+                    self.add_position_point()
+
                 else:
                     self.points_not_drawn += 1
                 self.uss.append([x, y])
@@ -104,28 +109,20 @@ class Game:
                 if self.filter_point(y):
                     self.uss_valid.append([x, y])
                     self.points_not_drawn = 0
-                    if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
-                                    x - self.uss_valid[-self.velocity_average][0])
-                        self.graph.new_point([x, v])
-                        self.points.append([x, v])
+                    self.add_velocity_point()
 
                 elif self.check_override(y):
                     self.add_points_not_drawn()
                     self.uss_valid.append([x, y])
-                    if len(self.uss_valid) > self.velocity_average:
-                        v = (y - self.uss_valid[-self.velocity_average][1]) / (
-                                    x - self.uss_valid[-self.velocity_average][0])
-                        self.graph.new_point([x, v])
-                        self.points.append([x, v])
+                    self.add_velocity_point()
 
                 else:
                     self.points_not_drawn += 1
+
                 self.uss.append([x, y])
 
                 if time.monotonic() < self.start_time:
                     self.start_point()
-
                 self.countdown()
 
         else:
@@ -179,6 +176,23 @@ class Game:
                     return False
             return True
         return False
+
+    def add_position_point(self):
+        if len(self.uss_valid) > self.average_position:
+            averaged_y = 0
+            for n in range(self.average_position):
+                averaged_y += self.uss_valid[-n - 1][1]
+            averaged_y /= self.average_position
+            self.graph.new_point([self.uss_valid[-1][0], averaged_y])
+            self.points.append([self.uss_valid[-1][0], averaged_y])
+
+    def add_velocity_point(self):
+        if len(self.uss_valid) > self.average_velocity:
+            x = self.uss_valid[-1][0]
+            v = (self.uss_valid[-1][1] - self.uss_valid[-self.average_velocity][1]) / (
+                    x - self.uss_valid[-self.average_velocity][0])
+            self.graph.new_point([x, v])
+            self.points.append([x, v])
 
     def start_point(self):
         """when the game hasn't started, draw a point on the y axis"""
