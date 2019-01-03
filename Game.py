@@ -37,7 +37,7 @@ class Game:
     average_velocity = 20
 
     # time until the game really starts
-    start_up_time = 5
+    start_up_time = 8
     # idle time between each tick
     waiting_time = 0.01
     show_countdown = True
@@ -81,49 +81,31 @@ class Game:
 
     def tick(self):
         if time.monotonic() - self.start_time < self.total_time:
-            if self.mode == DISTANCE:
-                x, y = self.get_distance()
+            x, y = self.get_distance()
 
-                if self.filter_point(y):
-                    if self.filter_point(y):
-                        self.uss_valid.append([x, y])
-                        self.points_not_drawn = 0
-                        self.add_position_point()
-
-                elif self.check_override(y):
-                    self.add_points_not_drawn()
-                    self.uss_valid.append([x, y])
+            if self.filter_point(y):
+                self.uss_valid.append([x, y])
+                self.points_not_drawn = 0
+                if self.mode == DISTANCE:
                     self.add_position_point()
-
-                else:
-                    self.points_not_drawn += 1
-                self.uss.append([x, y])
-
-                if time.monotonic() < self.start_time:
-                    self.start_point()
-
-                self.countdown()
-
-            elif self.mode == VELOCITY:
-                x, y = self.get_distance()
-                if self.filter_point(y):
-                    self.uss_valid.append([x, y])
-                    self.points_not_drawn = 0
+                elif self.mode == VELOCITY:
                     self.add_velocity_point()
 
-                elif self.check_override(y):
-                    self.add_points_not_drawn()
-                    self.uss_valid.append([x, y])
+            elif self.check_override(y):
+                self.add_points_not_drawn()
+                self.uss_valid.append([x, y])
+                if self.mode == DISTANCE:
+                    self.add_position_point()
+                elif self.mode == VELOCITY:
                     self.add_velocity_point()
 
-                else:
-                    self.points_not_drawn += 1
+            else:
+                self.points_not_drawn += 1
+            self.uss.append([x, y])
 
-                self.uss.append([x, y])
-
-                if time.monotonic() < self.start_time:
-                    self.start_point()
-                self.countdown()
+            if time.monotonic() < self.start_time:
+                self.start_point()
+            self.countdown()
 
         else:
             # if the game has ended
@@ -135,21 +117,17 @@ class Game:
 
     def get_distance(self):
         y = self.srf.distance()
-        while y < 5: # or y > self.y_max:
+        while y < 5 or y > self.y_max:
             y = self.srf.distance()
-            time.sleep(0.04)
+            time.sleep(0.06)
 
         x = time.monotonic() - self.start_time
         return x, y
 
     def filter_point(self, new_y):
         """tests if the point is not to far from the last point"""
-        if self.mode == DISTANCE:
-            if len(self.points) == 0 or math.fabs(new_y - self.points[-1][1]) < self.spike_delta_y:
-                return True
-        elif self.mode == VELOCITY:
-            if len(self.uss_valid) == 0 or math.fabs(new_y - self.uss_valid[-1][1]) < self.spike_delta_y:
-                return True
+        if len(self.uss_valid) == 0 or math.fabs(new_y - self.uss_valid[-1][1]) < self.spike_delta_y:
+            return True
         return False
 
     def add_points_not_drawn(self):
@@ -157,11 +135,7 @@ class Game:
         for i in range(self.spike_override - 1):  # -1 because the new point has not been added yet
             x = self.uss[-(self.spike_override - 1 - i)][0]
             y = self.uss[-(self.spike_override - 1 - i)][1]
-            if self.mode == DISTANCE:
-                self.graph.new_point([x, y])
-                self.points.append([x, y])
-            elif self.mode == VELOCITY:
-                self.uss_valid.append([x, y])
+            self.uss_valid.append([x, y])
         self.points_not_drawn = 0
 
     def check_override(self, new_y):
