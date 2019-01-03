@@ -64,7 +64,7 @@ class Game:
         self.idle_time = time.monotonic()
         # time of the last action
 
-        self.run()
+        # self.run()
 
     def run(self):
         while True:
@@ -205,7 +205,7 @@ class Game:
         """loss is the amount of 'error'"""
         loss = 0
         for point in self.points:
-            if point[0] > 0:
+            if 0 <= point[0] <= self.total_time:
                 y_ = self.graph.function.evaluate(point[0])
                 loss += math.fabs(y_ - point[1])
 
