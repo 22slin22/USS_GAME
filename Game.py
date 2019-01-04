@@ -108,6 +108,9 @@ class Game:
             self.countdown()
 
         else:
+            # print(self.uss)
+            # print(self.points)
+            # print(self.graph.function.shift_x, self.graph.function.shift_y, self.graph.function.squeeze_x, self.graph.function.stretch_y)
             # if the game has ended
             loss = self.calculate_loss()
             self.scores.append(int(1000 / loss))
@@ -117,9 +120,9 @@ class Game:
 
     def get_distance(self):
         y = self.srf.distance()
-        while y < 5 or y > self.y_max:
+        while y < 2 or y > self.y_max:
+            time.sleep(0.05)
             y = self.srf.distance()
-            time.sleep(0.06)
 
         x = time.monotonic() - self.start_time
         return x, y
@@ -200,6 +203,7 @@ class Game:
         self.points.clear()
         self.show_countdown = True
         self.running = False
+        self.points_not_drawn = 0
 
     def calculate_loss(self):
         """loss is the amount of 'error'"""
