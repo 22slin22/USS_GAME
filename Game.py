@@ -64,7 +64,7 @@ class Game:
         self.idle_time = time.monotonic()
         # time of the last action
 
-        # self.run()
+        self.run()
 
     def run(self):
         while True:
@@ -120,7 +120,8 @@ class Game:
 
     def get_distance(self):
         y = self.srf.distance()
-        while y < 2 or y > self.y_max:
+        # in Velocity mode y (distance) shouldn't be kept at the velocity_limit (y_max)
+        while y < 2 and (self.mode == VELOCITY or y > self.y_max):
             time.sleep(0.05)
             y = self.srf.distance()
 
