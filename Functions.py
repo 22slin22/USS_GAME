@@ -1,24 +1,29 @@
 import math
 import random
 
+DISTANCE = 0
+VELOCITY = 1
 
 class Function:
-    type = None
 
-    # in the form of:   strech_y * f(squeez_x * x - shift_x) + shift_y
-    shift_x = 0
-    shift_y = 0
-    squeeze_x = 1
-    stretch_y = 1
+    def __init__(self):
+        self.func_type = None
+        self.mode = None
 
-    # only for step functions
-    m1 = 0
-    m2 = 0
+        # in the form of:   strech_y * f(squeez_x * x - shift_x) + shift_y
+        self.shift_x = 0
+        self.shift_y = 0
+        self.squeeze_x = 1
+        self.stretch_y = 1
 
-    total_time = 0
-    y_min = 0
-    y_max = 0
-    y_span = 0
+        # only for step functions
+        self.m1 = 0
+        self.m2 = 0
+
+        self.total_time = 0
+        self.y_min = 0
+        self.y_max = 0
+        self.y_span = 0
 
     def set_scale(self, y_min, y_max, total_time):
         """sets the dimensions of the graph"""
@@ -32,23 +37,26 @@ class Function:
         # Amount of the graph left empty on the bottom and the top
         self.padding = int(self.y_span / 6)
 
-    def set_type(self, func_type, rand_transform=False):
-        self.type = func_type
+    def set_func_type(self, func_type, rand_transform=False):
+        self.func_type = func_type
         if rand_transform:
             self.randomize_transformation()
 
+    def set_mode(self, mode):
+        self.mode = mode
+
     def randomize_transformation(self):
-        if self.type == "lin":
+        if self.func_type == "lin":
             self.rand_lin_transform()
-        elif self.type == "quad":
+        elif self.func_type == "quad":
             self.rand_quad_transform()
-        elif self.type == "sin":
+        elif self.func_type == "sin":
             self.rand_sin_transform()
-        elif self.type == "exp":
+        elif self.func_type == "exp":
             self.rand_exp_transform()
-        elif self.type == "log":
+        elif self.func_type == "log":
             self.rand_log_transform()
-        elif self.type == "step":
+        elif self.func_type == "step":
             self.rand_step_transform()
 
     def rand_lin_transform(self):
@@ -73,6 +81,7 @@ class Function:
         yv = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y coordinate of the vertex
         y0 = random.randint(self.y_min + self.padding,
                             self.y_max - self.padding)  # y on the left side (also on the right side)
+
         while math.fabs(yv - y0) < self.min_distance:
             yv = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the left side
             y0 = random.randint(self.y_min + self.padding, self.y_max - self.padding)  # y on the right side
@@ -86,23 +95,23 @@ class Function:
         self.shift_x = random.randint(0, self.total_time)   # shift any amount (sin is periodic)
         self.shift_y = (self.y_min + self.y_max) / 2        # let the sin oscillate around the middle of the graph
 
-        periods = random.random() + 2                               # 1-2 periods
+        periods = random.random() + 2                               # 2-3 periods
         self.squeeze_x = 2 * math.pi * periods / self.total_time    # scale to the graph (2*pi is one period)
 
     def rand_exp_transform(self):
         self.shift_x = 0
-        self.shift_y = self.y_min + self.padding  # not random to get a reasonable graph
+        if self.mode == DISTANCE:
+            self.shift_y = self.y_min + self.padding  # not random to get a reasonable graph
+        else:
+            self.shift_y = (self.y_min + self.y_max) / 2
 
-        self.squeeze_x = random.random() + 1.5    # +1.5 to get a steep curve at the end
-        self.stretch_y = random.random()
-
-        y_right = self.evaluate(self.total_time)
-        # while the graph fits on the diagram and the player has to walk enough
-        while not (self.y_min + self.padding < int(y_right) < self.y_max - self.padding
-                   and y_right - self.shift_y > self.min_distance):
-            self.squeeze_x = random.random() + 1.5
-            self.stretch_y = random.random()
-            y_right = self.evaluate(self.total_time)
+        self.squeeze_x = random.random() * 0.5 + 1.5    # get a steep curve
+        self.stretch_y = 1
+        if self.mode == DISTANCE:
+            y = self.evaluate(self.total_time)
+            self.stretch_y = (self.y_max - self.padding * 2) / y
+        else:
+            self.stretch_y = (self.y_max - self.padding) / self.evaluate(self.total_time)
 
     def rand_log_transform(self):
         self.shift_x = -1                         # so there's no math error
@@ -123,9 +132,9 @@ class Function:
         self.shift_y = random.randint(self.y_min + self.padding, self.y_max - self.padding)     # y at t = 0
         y_middle = random.randint(self.y_min + self.padding, self.y_max - self.padding)         # y in the middle part
         y_right = random.randint(self.y_min + self.padding, self.y_max - self.padding)          # y at t = total_time
-        while math.fabs(y_middle - self.shift_y) < self.min_distance:
+        while math.fabs(y_middle - self.shift_y) < self.min_distance * 2/3:
             y_middle = random.randint(self.y_min + self.padding, self.y_max - self.padding)
-        while math.fabs(y_right - y_middle) < self.min_distance:
+        while math.fabs(y_right - y_middle) < self.min_distance * 2/3:
             y_right = random.randint(self.y_min + self.padding, self.y_max - self.padding)
 
         self.m1 = (y_middle - self.shift_y) / (self.total_time / 3)         # slope of the first part
@@ -133,7 +142,7 @@ class Function:
 
     def evaluate(self, x):
         # calculating value for a step function
-        if self.type == "step":
+        if self.func_type == "step":
             if x < self.total_time / 3:
                 return self.m1 * x + self.shift_y
             elif x < self.total_time * 2 / 3:
@@ -142,7 +151,7 @@ class Function:
                 return (self.m1 * (self.total_time / 3) + self.shift_y) + (self.m2 * (x - self.total_time * 2 / 3))
         # for any other function
         else:
-            return self.stretch_y * functions(self.type, self.squeeze_x * x - self.shift_x) + self.shift_y
+            return self.stretch_y * functions(self.func_type, self.squeeze_x * x - self.shift_x) + self.shift_y
 
     def return_function_values(self, interval):
         """return an array of x, y pairs of the function in the interval of interval"""

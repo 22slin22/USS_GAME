@@ -31,13 +31,13 @@ class Graph(tk.Frame):
         self.graph_y_end = self.canvas_height - 150
         self.x_span = self.graph_x_end - self.graph_x_start
 
-    def new_point(self, new_point):
+    def new_point(self, new_point, color="red"):
         # calculate x, y position in pixels
         x = self.graph_x_start + (new_point[0] * self.pixels_per_second)
         y = self.graph_y_end - ((new_point[1] - self.game.y_min) * self.pixels_per_cm)
 
         if len(self.points) > 0:
-            self.canvas.create_line(self.points[-1][0], self.points[-1][1], x, y, fill="red", width=3)
+            self.canvas.create_line(self.points[-1][0], self.points[-1][1], x, y, fill=color, width=3)
 
         self.points.append([x, y])
 
@@ -83,7 +83,7 @@ class Graph(tk.Frame):
 
     def add_function(self, func):
         self.function.set_scale(self.game.y_min, self.game.y_max, self.game.total_time)
-        self.function.set_type(func, rand_transform=True)
+        self.function.set_func_type(func, rand_transform=True)
         self.function.draw(self.canvas, self.graph_x_start, self.graph_y_start, self.graph_x_end, self.graph_y_end,
                            self.game.interval, width=3, color="black")
 

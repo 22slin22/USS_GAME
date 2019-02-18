@@ -18,7 +18,7 @@ class FrameManager(tk.Tk):
         self.attributes("-fullscreen", True)
         self.wm_attributes("-topmost", 1)
 
-        # kill program when <escape> pressed
+        # kill program when escape is pressed
         self.bind('<Escape>', lambda event: self.destroy())
 
         self.game = game
@@ -141,22 +141,22 @@ class Functions(tk.Frame):
 
             # sets the right function that is displayed inside the menu
             if i == 0:
-                function.set_type("lin")
+                function.set_func_type("lin")
                 function.set_transformations(0, 0.25, 1, 0.5)
             elif i == 1:
-                function.set_type("step")
+                function.set_func_type("step")
                 function.set_step_transformations(0.25, 3 / 4, 3 / 4)
             elif i == 2:
-                function.set_type("exp")
+                function.set_func_type("exp")
                 function.set_transformations(0, 0, 5, 0.0234)
             elif i == 3:
-                function.set_type("log")
+                function.set_func_type("log")
                 function.set_transformations(-1, 0, 30, 0.221)
             elif i == 4:
-                function.set_type("quad")
+                function.set_func_type("quad")
                 function.set_transformations(0.5, 0.25, 1, 2)
             elif i == 5:
-                function.set_type("sin")
+                function.set_func_type("sin")
                 function.set_transformations(0, 0.5, 6.3, 0.3)
 
             function.draw(self.canvas, x1, y1, x2, y2, interval=0.05, width=2)
@@ -164,7 +164,7 @@ class Functions(tk.Frame):
         # colour the first button orange
         self.canvas.itemconfig(self.buttons[0], fill="orange")
 
-        function.set_type("lin")
+        function.set_func_type("lin")
         function.set_transformations(0, 0.25, 1, 0.5)
 
         draw_button_info(self.canvas, "left", "select", "right")
@@ -207,6 +207,10 @@ class Functions(tk.Frame):
 
 
 class Type(tk.Frame):
+
+    DISTANCE = 0
+    VELOCITY = 1
+
     # Select whether to play tv or tx
     selected_button = 0
 
@@ -242,13 +246,15 @@ class Type(tk.Frame):
         self.canvas.create_text(self.width / 2 + button_gap / 2 + button_width / 2, self.height / 2, text="t-v",
                                 font=("Times", 60))
 
-        draw_button_info(self.canvas, "back", "select", "switch")
+        draw_button_info(self.canvas, "left", "select", "right")
 
     def on_button_pressed(self, button_index):
         # color current button white -> select new button -> color current button orange -> repeat
         if button_index == 0:
-            # go back
-            self.controller.show_frame("Functions")
+            # go left
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
+            self.selected_button = not self.selected_button
+            self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")
         if button_index == 1:
             # select
             if self.selected_button == 0:
@@ -257,14 +263,10 @@ class Type(tk.Frame):
             elif self.selected_button == 1:
                 self.controller.game.y_min = -100
                 self.controller.game.y_max = 100
-            self.controller.game.mode = self.selected_button
+            self.controller.game.set_mode(self.selected_button)
             self.controller.game.start()
-
         if button_index == 2:
-            # switch buttons tx/tv
+            # go right
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="white")
-            self.selected_button += 1
-            if self.selected_button > 1:
-                self.selected_button = 0
-
+            self.selected_button = not self.selected_button
             self.canvas.itemconfig(self.buttons[self.selected_button], fill="orange")

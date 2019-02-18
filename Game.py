@@ -201,6 +201,7 @@ class Game:
     def reset(self):
         """reset the game after each run"""
         self.uss.clear()
+        self.uss_valid.clear()
         self.points.clear()
         self.show_countdown = True
         self.running = False
@@ -227,6 +228,7 @@ class Game:
 
     def set_mode(self, mode):
         self.mode = mode
+        self.graph.function.set_mode(mode)
 
     def set_graph(self, graph):
         self.graph = graph
