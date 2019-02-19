@@ -114,6 +114,8 @@ class Functions(tk.Frame):
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
 
+        self.canvas.create_text(self.width / 2, self.height / 4, text="Select a function", font="Times 50 italic bold")
+
         self.num_buttons = 6
 
         # +2 to let one button width space on each side
@@ -223,6 +225,9 @@ class Type(tk.Frame):
         self.height = self.winfo_screenheight()
         self.canvas = Canvas(self, width=self.width, height=self.height)
         self.canvas.pack()
+
+        self.canvas.create_text(self.width / 2, self.height / 4, text="Select a graph type",
+                                font="Times 50 italic bold")
 
         # Button dimensions
         button_width = 300
